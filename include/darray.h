@@ -359,7 +359,13 @@ namespace DArray {
             }
         }
 
-
+        void set_zeros() {
+            for (int i = 0; i < dims()[0]; i++) {
+                for (int j = 0; j < dims()[1]; j++) {
+                    (*this)(i,j) = 0;
+                }
+            }
+        }
 
     };
 
@@ -459,7 +465,6 @@ namespace DArray {
             for (int i = 0; i < m_ldims[0]; i++) {
                 for (int j = 0; j < m_ldims[1]; j++) {
                     m_data[i+j*m_lld] = distribution(generator);
-
                 }
             }
         }
@@ -480,7 +485,6 @@ namespace DArray {
             std::normal_distribution<T> distribution(mean, stddev);
             for (int i = 0; i < m_ldims[0]; i++) {
                 for (int j = 0; j < m_ldims[1]; j++) {
-//                    (*this)(i, j) = distribution(generator);
                     m_data[i+j*m_lld] = distribution(generator);
                 }
             }
@@ -508,6 +512,15 @@ namespace DArray {
             }
         }
 
+        void set_zeros() {
+            for (int i = 0; i < m_ldims[0]; i++) {
+                for (int j = 0; j < m_ldims[1]; j++) {
+                    //  (*this)(i, j) = 0;
+                    m_data[i+j*lld()] = 0;
+                }
+            }
+        }
+
         void set_function(std::function<T (int, int)> func) {
             auto d = m_grid.dims();
             auto r = m_grid.ranks();
@@ -515,10 +528,24 @@ namespace DArray {
                 int gi = d[0] * i + r[0];
                 for (int j = 0; j < m_ldims[1]; j++) {
                     int gj = d[1] * j + r[1];
+                    // if(m_grid.rank() == 3) printf("gi::%d, gj::%d \n", gi, gj);
                     m_data[i+j*m_lld] = func(gi,gj);
                 }
             }
         }
+
+        void set_value_function(float* x, int ldx) {
+            auto d = m_grid.dims();
+            auto r = m_grid.ranks();
+            for (int i = 0; i < m_ldims[0]; i++) {
+                int gi = d[0] * i + r[0];
+                for (int j = 0; j < m_ldims[1]; j++) {
+                    int gj = d[1] * j + r[1];
+                    m_data[i+j*m_lld] = x[gi+gj*ldx];
+                }
+            }
+        }
+
         // forbenius norm
         double fnorm() {
             double sqr_sum = 0;
@@ -614,6 +641,20 @@ namespace DArray {
             }
         }
 
+        //distribute accross all processes
+        // void distribute(int tot_p, float* a, int lda, int root){
+        void distribute(LMatrix<T> A, int i1, int j1, int i2, int j2, int root){
+            Tracer tracer(__FUNCTION__ );
+            if(root<0 || root>m_grid.np())
+                assert(0);
+            int mm = A.dims()[0], nn = A.dims()[1];
+            assert(mm == i2-i1 && nn == j2-j1);
+            auto i12 = global_to_local_index({i1,i2}, m_grid.ranks()[0], m_grid.dims()[0], 0);
+            auto j12 = global_to_local_index({j1,j2}, m_grid.ranks()[1], m_grid.dims()[1], 0);
+            int np = m_grid.dims()[0], nq = m_grid.dims()[1];
+            int p = m_grid.ranks()[0], q = m_grid.ranks()[1];
+            printf("mm::%d, nn::%d, i12[0]::%d, i12[1]::%d, j12[0]::%d, j12[1]::%d, np::%d, nq::%d, p::%d, q::%d\n", mm, nn, i12[0], i12[1], j12[0], j12[1], np, nq, p, q);
+        }
 
 
         void collect_and_print(const std::string &title, int root = 0) {
@@ -874,6 +915,7 @@ namespace DArray {
             Tracer tracer(__FUNCTION__ );
             int p = grid().ranks()[0], q = grid().ranks()[1];
             int np = grid().dims()[0], nq = grid().dims()[1];
+            // printf("np::%d, nq::%d\n", np, nq);
             assert(np == nq);
             auto i12 = global_to_local_index({i1, i2}, p, np, 0);
             auto j12 = global_to_local_index({j1, j2}, q, nq, 0);
@@ -980,7 +1022,7 @@ namespace DArray {
             assert(nn == j2-j1);
             auto i12 = global_to_local_index({i1,i2}, grid().ranks()[0], grid().dims()[0], 0);
             auto j12 = global_to_local_index({j1,j2}, grid().ranks()[1], grid().dims()[1], 0);
-            int  nq = grid().dims()[1];
+            int nq = grid().dims()[1];
             int q = grid().ranks()[1];
             for(int j=0; j<j12[1]-j12[0]; j++) {
                 for(int i=0; i<mm; i++) {
