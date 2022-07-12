@@ -328,6 +328,17 @@ namespace DArray {
                 }
             }
         }
+
+        void set_normal_seed(T mean, T stddev, int seed) {
+            std::mt19937 generator(seed);
+            std::normal_distribution<T> distribution(mean, stddev);
+            for (int i = 0; i < m_dims[0]; i++) {
+                for (int j = 0; j < m_dims[1]; j++) {
+                    m_data[i+j*m_ld] = distribution(generator);
+                }
+            }
+        }
+
         void set_function(std::function<T (int, int)> func) {
             for (int i = 0; i < dims()[0]; i++) {
                 for (int j = 0; j < dims()[1]; j++) {
@@ -534,7 +545,7 @@ namespace DArray {
             }
         }
 
-        void set_value_function(float* x, int ldx) {
+        void set_value_from_matrix(float* x, int ldx) {
             auto d = m_grid.dims();
             auto r = m_grid.ranks();
             for (int i = 0; i < m_ldims[0]; i++) {
@@ -542,7 +553,17 @@ namespace DArray {
                 for (int j = 0; j < m_ldims[1]; j++) {
                     int gj = d[1] * j + r[1];
                     m_data[i+j*m_lld] = x[gi+gj*ldx];
+                    // if(m_grid.rank() == 0 && x[gi+gj*ldx]!= 0.00000) printf("x[%d,%d]::%f (%d) , m_data[%d,%d]::%f (%d)\n", gi, gj, x[gi+gj*ldx], (gi+gj*ldx), i, j, m_data[i+j*m_lld], i+j*m_lld);
                 }
+            }
+        }
+
+         void set_value_from_vector(float* y) {
+            auto d = m_grid.dims();
+            auto r = m_grid.ranks();
+            for (int i = 0; i < m_ldims[0]; i++) {
+                int gi = d[0] * i + r[0];
+                m_data[i] = y[gi];
             }
         }
 
