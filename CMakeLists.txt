@@ -35,12 +35,12 @@ target_link_libraries(test6 PRIVATE ${MPI_C_LIBRARIES} ${BLAS_LIBRARIES} ${MPI_L
 set_source_files_properties(tests/test_cuda.cu PROPERTIES LANGUAGE CUDA)
 set_source_files_properties(include/darray_cuda.cu PROPERTIES LANGUAGE CUDA)
 
-add_executable(test7 tests/test7.cpp ${COMMON_HEADERS} include/read_input.h include/darray_convex.h include/darray_cuda.o)
-target_link_libraries(test7 PRIVATE ${MPI_C_LIBRARIES} ${BLAS_LIBRARIES} ${MPI_LIBRARIES} ${PROFILER_LIBRARIES} cudart cublas)
+add_executable(test7 tests/test7.cpp ${COMMON_HEADERS} include/read_input.h include/darray_cuda.o)
+target_link_libraries(test7 PRIVATE ${MPI_C_LIBRARIES} ${BLAS_LIBRARIES} ${MPI_LIBRARIES} ${PROFILER_LIBRARIES} cudart cublas cusolver cusparse)
 
 
-add_executable(testsvm tests/testsvm.cpp ${COMMON_HEADERS} include/read_input.h include/darray_convex.h include/darray_cuda.o)
-target_link_libraries(testsvm PRIVATE ${MPI_C_LIBRARIES} ${BLAS_LIBRARIES} ${MPI_LIBRARIES} ${PROFILER_LIBRARIES} cudart cublas)
+add_executable(testsvm tests/testsvm.cpp ${COMMON_HEADERS} include/read_input.h include/darray_cuda.o)
+target_link_libraries(testsvm PRIVATE ${MPI_C_LIBRARIES} ${BLAS_LIBRARIES} ${MPI_LIBRARIES} ${PROFILER_LIBRARIES} cudart cublas cusolver cusparse -MT -Wl,--no-as-needed -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl)
 
 add_executable(perftest_cholesky perftests/perftest_cholesky.cpp ${COMMON_HEADERS})
 target_link_libraries(perftest_cholesky PRIVATE ${MPI_C_LIBRARIES} ${BLAS_LIBRARIES} ${MPI_LIBRARIES} ${PROFILER_LIBRARIES} -Wl,--export-dynamic)
