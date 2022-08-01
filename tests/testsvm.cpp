@@ -4,9 +4,9 @@
 
 extern void cuda_init();
 extern void cuda_finalize();
-// extern void lra(int rank, int n, int d, int k, float* Xi, int ldxi, float* Xj, int ldxj, float* Yi, float* Yj, float* K, int ldk, float gamma);
-extern void lra(int rank, int gn, int ln, int d, int k, float* Xi, int ldxi, float* Xj, int ldxj, float* Yi, float* Yj, float* KOmega, int ldk, float gamma, float* Omega, int ldo);
-extern void SGEQRF(int *m, int *n, float *Q, int *ldq, float *tau, float *work, int *lwork, int *info);
+extern void LRA(int rank, int gn, int ln, int d, int k, float* Xi, int ldxi, float* Xj, int ldxj, float* Yi, float* Yj, float* KOmega, int ldk, float gamma, float* Omega, int ldo);
+extern void SGEQRF(int m, int n, float *Q, int ldq, int *info);
+extern void SORMQR(int m, int n, float *Q, int ldq, float *RQ, int ldrq, int *info);
 
 template<typename T>
 DArray::LMatrix<T> QR(DArray::DMatrix<T> A, int i1, int j1, int i2, int j2) {
@@ -15,13 +15,80 @@ DArray::LMatrix<T> QR(DArray::DMatrix<T> A, int i1, int j1, int i2, int j2) {
   int m = LA.dims()[0], n = LA.dims()[1];
   assert( n == j2 - j1);
   assert( m > n);
-
+  
   // 2. local QR (BLAS)
-  std::vector<T> tau(std::min(m,n));
-  int lwork = -1, info ;
-  T tmp;
-  SGEQRF( &m, &n, LA.data(), &LA.ld(), tau.data(), &tmp, &lwork, &info);
+  int info=-1;
+  SGEQRF( m, n, LA.data(), LA.ld(), &info);
+  assert(info == 0);
+
+  // 3. stack Rs into a big tall R, size (n*np) * n, e.g. 10,000 * 100
+  // FIXME: chnage datatype according to typename T.
+  int np = A.grid().dims()[0];
+  std::vector<T> recv(np*n*n);
+  {
+      DArray::LMatrix<T> R(n, n);
+      auto err = MPI_Allgather(R.data(), n * n, MPI_FLOAT, recv.data(), n * n, MPI_FLOAT, A.grid().comms()[0]);
+      assert(err == MPI_SUCCESS);
+  }
+
+  DArray::LMatrix<T> Rs(np*n, n);
+  int ldRs = Rs.ld();
+  for(int b=0; b<np; b++) {
+      T* recvblock = &recv.data()[n*n*b];
+      for(int j=0; j<n; j++) {
+          for (int i=0; i<n; i++)
+              Rs.data()[b*n+i+j*ldRs] = (j<i)? 0 : recvblock[i + j*n];
+      }
+  }
+
+  // 4. qr the stacked R
+  DArray::LMatrix<T> Q(np*n, n);
+  int ldq = Q.ld();
+  for (int i=0; i<ldq; i++) {
+      for (int j = 0; j < n; j++)
+          Q.data()[i + j * ldq] = (i == j) ? 1.0 : 0;
+  }
+  {
+    int m = np*n;
+    int info=-1;
+    SGEQRF( m, n, Rs.data(), Rs.ld(), &info);
+    assert(info == 0);
+
+    info=-1;
+    SORMQR(m, n, Rs.data(), Rs.ld(), Q.data(), Q.ld(), &info);
+    assert(info == 0);
+  }
+
+  // 5. post-multiply the Q of stacked R
+  // LA Q has size m*n; R Q has size n*n
+  // LA Q * R Q -> m*n
+  // (I - 2*tau*H[1]*H[1]') m*m apply to n*n -> m*n
+  DArray::LMatrix<T> RQ(m, n);
+  auto pi = A.grid().ranks()[0];
+  int ldRQ = RQ.ld(), ldQ = Q.ld();
+  for(int j=0; j<n; j++) {
+    for(int i=0; i<n; i++) {
+        RQ.data()[i+j*ldRQ] = Q.data()[n*pi + i + j*ldQ];
+    }
+    for(int i=n; i<m; i++)
+        RQ.data()[i+j*ldRQ] = 0;
+  }
+
+  info=0;
+  SORMQR(m, n, LA.data(), LA.ld(), RQ.data(), ldRQ, &info);
+  assert(info == 0);
+
+  // 6. write Q back to distributed A
+  auto grid = A.grid();
+  // grid.print(RQ, "RQ");
+  A.dereplicate_in_rows(RQ, i1, j1, i2, j2);
+
+  DArray::LMatrix<T> R(n,n);
+  DArray::copy_block(n, n, Rs.data(), Rs.ld(), R.data(), R.ld());
+  return R;
 }
+
+
 
 int main(int argc, char** argv){
   MPI_Init(&argc, &argv);
@@ -33,12 +100,13 @@ int main(int argc, char** argv){
   cuda_init();
   DArray::ElapsedTimer timer;
 
-  long long int gn=49980;
-	int d=22;
-	int k=64;
+  long long int gn=5000000;
+	int d=18;
+	int k=256;
 	int qq=1;
 	float gamma=0.0001f;
-	char *filename="/project/pwu/dataset/ijcnn1";
+	char *filename="/project/pwu/dataset/SUSY";
+
 
   if(g.rank()==0) printf("#### SVM Kernel Training (Grid::%dx%d, gn::%d, d::%d, k::%d) \n", p, q, gn, d, k);
   float *x=(float*)malloc(sizeof(float)*d*gn);
@@ -64,8 +132,8 @@ int main(int argc, char** argv){
   // X.collect_and_print("X");
   // Y.collect_and_print("Y");
   // Omega.collect_and_print("Omega");
-  // if(g.rank()==0) printf("Elemental Distribution Done \n");
-  // g.barrier();
+  if(g.rank()==0) printf("Elemental Distribution Done \n");
+  g.barrier();
 
   // Distributed Low-Rank Approximated Kernel
   DArray::DMatrix<float> KO(g, gn, k);
@@ -90,28 +158,29 @@ int main(int argc, char** argv){
     buff.set_zeros();
     // if(g.rank()==0) Omegal.print("Omegal");
     // if(g.rank()==0) buff.print("buff");
-    if(g.rank()==0) printf("Xi[%d,%d], Xj[%d,%d], XjT[%d,%d], \nOmega_l[%d,%d] \nbuff[%d,%d] \n", Xi.dims()[0], Xi.dims()[1], Xj.dims()[0], Xj.dims()[1],
-    XjT.dims()[0], XjT.dims()[1], Omegal.dims()[0], Omegal.dims()[1], buff.dims()[0], buff.dims()[1]);
+    // if(g.rank()==0) printf("Xi[%d,%d], Xj[%d,%d], XjT[%d,%d], \nOmega_l[%d,%d] \nbuff[%d,%d] \n", Xi.dims()[0], Xi.dims()[1], Xj.dims()[0], Xj.dims()[1],
+    // XjT.dims()[0], XjT.dims()[1], Omegal.dims()[0], Omegal.dims()[1], buff.dims()[0], buff.dims()[1]);
 
     int ln = Xi.dims()[0];
     int gd = Xi.dims()[1];
     int lk = Omegal.dims()[1];
     timer.start();
-    lra(g.rank(), gn, ln, gd, lk, Xi.data(), Xi.dims()[0], XjT.data(), XjT.dims()[0], Yi.data(), YjT.data(), buff.data(), buff.dims()[0], gamma, Omegal.data(), Omegal.dims()[0]);
+    LRA(g.rank(), gn, ln, gd, lk, Xi.data(), Xi.ld(), XjT.data(), XjT.ld(), Yi.data(), YjT.data(), buff.data(), buff.ld(), gamma, Omegal.data(), Omegal.ld());
     int ms = timer.elapsed();
     if(g.rank()==0) fmt::print("P[{},{}]: LRA takes: {}(ms)\n",  g.ranks()[0], g.ranks()[1], ms);
     KO.dereplicate_in_all(buff, 0, 0, buff.dims()[0], buff.dims()[1]);
   }
 
-  // KO.collect_and_print("KO");
-  auto fnorm = KO.fnorm();
-  if(g.rank()==0) fmt::print("norm(K)={}\n", fnorm);
+  // // KO.collect_and_print("KO");
+  // auto fnorm = KO.fnorm();
+  // if(g.rank()==0) fmt::print("norm(K)={}\n", fnorm);
 
   // Distributed QR
   DArray::DMatrix<float> Q = KO.clone();
+  timer.start();
   DArray::LMatrix<float> R = QR(Q, 0, 0, gn, k);
-  if(g.rank()==0) printf("Finished QR\n");
-
+  int ms = timer.elapsed();
+  if(g.rank()==0) fmt::print("P[{},{}]: QR takes: {}(ms)\n",  g.ranks()[0], g.ranks()[1], ms);
 
   cuda_finalize();
   MPI_Finalize();

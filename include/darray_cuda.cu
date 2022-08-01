@@ -59,6 +59,19 @@ void printMatrixDeviceBlock(char *filename,int m, int n, T* dA, int lda)
     free(ha);
 }
 
+__global__
+void  getR(int m, int n, float *da, int lda, float *dr, int ldr)
+{
+	int i = threadIdx.x + blockDim.x * blockIdx.x;
+	int j = threadIdx.y + blockDim.y * blockIdx.y;
+	if (i < m&&j < n){
+		if (i <= j){
+			dr[i + j*ldr] = da[i + j*lda];
+		}
+	}
+}
+
+
 
 template<typename T>
 void printVectorDeviceBlock(char *filename, int m, T* dA)
@@ -155,9 +168,9 @@ __global__ void s2h_vec(float *Z, __half *hZ, int m){
 
 
 
-void lra(int rank, int gn, int ln, int d, int k, float* Xi, int ldxi, float* Xj, int ldxj, float* Yi, float* Yj, float* KO, int ldk, float gamma, float* Omega, int ldo){
+void LRA(int rank, int gn, int ln, int d, int k, float* Xi, int ldxi, float* Xj, int ldxj, float* Yi, float* Yj, float* KO, int ldk, float gamma, float* Omega, int ldo){
     const int B=16384;
-    if(rank ==0) printf("gn::%d, ln::%d, d::%d, k::%d\nldxi::%d, ldxj::%d, ldk::%d, ldo::%d\n", gn, ln, d, k, ldxi, ldxj, ldk, ldo);
+    // if(rank ==0) printf("gn::%d, ln::%d, d::%d, k::%d\nldxi::%d, ldxj::%d, ldk::%d, ldo::%d\n", gn, ln, d, k, ldxi, ldxj, ldk, ldo);
     float *dXi, *dXj, *dYi, *dYj, *dO, *dKO;
     gpuErrchk(cudaMalloc(&dXi, sizeof(float)*ln*d));
     gpuErrchk(cudaMalloc(&dXj, sizeof(float)*gn*d));
@@ -224,10 +237,74 @@ void lra(int rank, int gn, int ln, int d, int k, float* Xi, int ldxi, float* Xj,
     cudaDeviceSynchronize();
     gpuErrchk(cudaMemcpy(KO, dKO, sizeof(float)*ln*k, cudaMemcpyDeviceToHost));
     cudaPeekAtLastError();
+    cudaFree(dXi);
+    cudaFree(dXj);
+    cudaFree(dYi);
+    cudaFree(dYj);
+    cudaFree(dKO);
+    cudaFree(dO);
+    cudaFree(dXij);
+    cudaFree(dXi_sqr);
+    cudaFree(dXj_sqr);
+    cudaFree(dk);
 }
 
 
+void SGEQRF(int m, int n, float *Q, int ldq, int *info){
+    float *dQ, *d_tau, *d_work;
+    int *d_info;
+    int lwork_geqrf = 0;
+	int lwork_orgqr = 0;
+    int lwork = 0;
 
-void SGEQRF(int *m, int *n, float *Q, int *ldq, float *tau, float *work, int *lwork, int *info){
+    gpuErrchk(cudaMalloc(&dQ, sizeof(float)*m*n));
+    gpuErrchk(cudaMalloc(&d_tau, sizeof(float)*n));
+	gpuErrchk(cudaMalloc((void**)&d_info, sizeof(int)));
+    gpuErrchk(cudaMemcpy(dQ, Q, sizeof(float)*m*n, cudaMemcpyHostToDevice));
 
+    cusolverDnSgeqrf_bufferSize(csHandle, m, n, dQ, ldq, &lwork_geqrf);
+    cusolverDnSorgqr_bufferSize(csHandle, m, n, n, dQ, ldq, d_tau, &lwork_orgqr);
+    // printf("lwork_geqrf::%d, lwork_orgqr::%d\n", lwork_geqrf, lwork_orgqr);
+
+	lwork = (lwork_geqrf > lwork_orgqr) ? lwork_geqrf : lwork_orgqr;
+	cudaMalloc(&d_work, sizeof(int)*lwork);
+
+    cusolverDnSgeqrf(csHandle, m, n, dQ, ldq, d_tau, d_work, lwork, d_info);
+	cudaStreamSynchronize(stream);
+    cusolverDnSorgqr(csHandle, m, n, n, dQ, ldq, d_tau, d_work, lwork, d_info);
+       
+    gpuErrchk(cudaMemcpy(Q, dQ, sizeof(float)*m*n, cudaMemcpyDeviceToHost));
+    gpuErrchk(cudaMemcpy(info, d_info, sizeof(int), cudaMemcpyDeviceToHost));
+
+    cudaFree(dQ);
+    cudaFree(d_tau);
+    cudaFree(d_work);
+    cudaFree(d_info);
+}
+
+void SORMQR(int m, int n, float *Q, int ldq, float *RQ, int ldrq, int *info){
+    float *dQ, *dRQ, *d_tau, *d_work;
+    int *d_info;
+	int lwork_ormqr = 0;
+
+    gpuErrchk(cudaMalloc(&dQ, sizeof(float)*m*n));
+    gpuErrchk(cudaMalloc(&dRQ, sizeof(float)*m*n));
+    gpuErrchk(cudaMalloc(&d_tau, sizeof(float)*m));
+	gpuErrchk(cudaMalloc((void**)&d_info, sizeof(int)));
+    gpuErrchk(cudaMemcpy(dQ, Q, sizeof(float)*m*n, cudaMemcpyHostToDevice));
+    gpuErrchk(cudaMemcpy(dRQ, RQ, sizeof(float)*n*n, cudaMemcpyHostToDevice));
+
+    cusolverDnSormqr_bufferSize(csHandle, CUBLAS_SIDE_LEFT, CUBLAS_OP_N, m, n, n, dQ, ldq, d_tau, dRQ, ldrq, &lwork_ormqr);
+	cudaMalloc(&d_work, sizeof(int)*lwork_ormqr);
+
+    cusolverDnSormqr(csHandle, CUBLAS_SIDE_LEFT, CUBLAS_OP_N, m, n, n, dQ, ldq, d_tau, dRQ, ldrq, d_work, lwork_ormqr, d_info);
+  
+    gpuErrchk(cudaMemcpy(RQ, dRQ, sizeof(float)*m*n, cudaMemcpyDeviceToHost));
+    gpuErrchk(cudaMemcpy(info, d_info, sizeof(int), cudaMemcpyDeviceToHost));
+
+    cudaFree(dQ);
+    cudaFree(dRQ);
+    cudaFree(d_tau);
+    cudaFree(d_work);
+    cudaFree(d_info);
 }
