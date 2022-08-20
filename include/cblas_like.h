@@ -18,8 +18,8 @@ void sgetrf_(int *M, int *N, float *A, int *lda, int *ipiv, int *info);
 void sgeqrf_(int *M, int *N, float *A, int *lda, float *tau, float *work, int *lwork, int *info);
 void dgeqrf_(int *M, int *N, double *A, int *lda, double *tau, double *work, int *lwork, int *info);
 void sormqr_(const char *side, const char *trans, int *m, int *n, int *k, float *A, int *lda, float *tau, float *C, int *ldc, float *work, int *lwork, int *info);
-
 void sgesvd_(const char *jobu, const char *jobvt, int *m, int *n, float *A, int *lda, float *S, float *U, int *ldu, float *VT, int *ldvt, float *work, int *lwork, int *info);
+void ssyevd_(const char *ta, const char *uplo, int *N, float *A, int *lda, float *W, float *work, int *lwork, float *iwork, int *liwork, int *info);
 
 }
 

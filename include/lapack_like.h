@@ -376,8 +376,34 @@ namespace DArray {
         copy_block(n, n, Rs.data(), Rs.ld(), R.data(), R.ld());
         return R;
     }
+    
     template<typename T>
     void qr_factorize_unblocked(DMatrix<T> A, int i1, int j1, int i2, int j2) {
 
+    }
+
+
+
+    template<typename T>
+    LMatrix<T> svd(int k, DMatrix<T> A, int i1, int j1, int i2, int j2) {
+        auto LA = A.replicate_in_all(i1,j1,i2,j2);
+        int m = LA.dims()[0], n = LA.dims()[1];
+        assert( n == j2 - j1);
+        assert( m == i2 - i1);
+        
+        DArray::LMatrix<float> S(k,1);
+        DArray::LMatrix<float> U(k,k);
+        DArray::LMatrix<float> VT(k,k);
+
+        int info, lwork = -1;
+        float tmp;
+        //perform a svd on Q^T*A
+        sgesvd_("A", "A", &k, &k, LA.data(), &LA.ld(), S.data(), U.data(), &U.ld(), VT.data(), &VT.ld(), &tmp, &lwork, &info);
+        lwork = tmp;
+        DArray::LMatrix<float> work(lwork, 1);
+
+        sgesvd_("A", "A", &k, &k, LA.data(), &LA.ld(), S.data(), U.data(), &U.ld(), VT.data(), &VT.ld(), work.data(), &lwork, &info);
+
+        return S;
     }
 }

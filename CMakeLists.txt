@@ -39,8 +39,11 @@ add_executable(test7 tests/test7.cpp ${COMMON_HEADERS} include/read_input.h incl
 target_link_libraries(test7 PRIVATE ${MPI_C_LIBRARIES} ${BLAS_LIBRARIES} ${MPI_LIBRARIES} ${PROFILER_LIBRARIES} cudart cublas cusolver cusparse)
 
 
-add_executable(testsvm tests/testsvm.cpp ${COMMON_HEADERS} include/read_input.h include/darray_cuda.o)
-target_link_libraries(testsvm PRIVATE ${MPI_C_LIBRARIES} ${BLAS_LIBRARIES} ${MPI_LIBRARIES} ${PROFILER_LIBRARIES} cudart cublas cusolver cusparse -MT -Wl,--no-as-needed -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl)
+add_executable(testsvm tests/testsvm.cpp ${COMMON_HEADERS} include/read_input.h include/dkernel.h)
+target_link_libraries(testsvm PRIVATE ${MPI_C_LIBRARIES} ${BLAS_LIBRARIES} ${MPI_LIBRARIES} ${PROFILER_LIBRARIES} -MT -Wl,--no-as-needed -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl)
+
+#add_executable(testsvm tests/testsvm.cpp ${COMMON_HEADERS} include/read_input.h include/darray_cuda.o)
+#target_link_libraries(testsvm PRIVATE ${MPI_C_LIBRARIES} ${BLAS_LIBRARIES} ${MPI_LIBRARIES} ${PROFILER_LIBRARIES} cudart cublas cusolver cusparse -MT -Wl,--no-as-needed -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl)
 
 add_executable(perftest_cholesky perftests/perftest_cholesky.cpp ${COMMON_HEADERS})
 target_link_libraries(perftest_cholesky PRIVATE ${MPI_C_LIBRARIES} ${BLAS_LIBRARIES} ${MPI_LIBRARIES} ${PROFILER_LIBRARIES} -Wl,--export-dynamic)

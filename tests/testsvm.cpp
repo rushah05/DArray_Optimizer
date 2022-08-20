@@ -1,93 +1,7 @@
 #include "darray.h"
 #include "read_input.h"
 #include "lapack_like.h"
-
-extern void cuda_init();
-extern void cuda_finalize();
-extern void LRA(int rank, int gn, int ln, int d, int k, float* Xi, int ldxi, float* Xj, int ldxj, float* Yi, float* Yj, float* KOmega, int ldk, float gamma, float* Omega, int ldo);
-extern void SGEQRF(int m, int n, float *Q, int ldq, int *info);
-extern void SORMQR(int m, int n, float *Q, int ldq, float *RQ, int ldrq, int *info);
-
-template<typename T>
-DArray::LMatrix<T> QR(DArray::DMatrix<T> A, int i1, int j1, int i2, int j2) {
-  // 1. replicate in rows: rows distributed, col replicated
-  auto LA = A.replicate_in_rows(i1,j1,i2,j2);
-  int m = LA.dims()[0], n = LA.dims()[1];
-  assert( n == j2 - j1);
-  assert( m > n);
-  
-  // 2. local QR (BLAS)
-  int info=-1;
-  SGEQRF( m, n, LA.data(), LA.ld(), &info);
-  assert(info == 0);
-
-  // 3. stack Rs into a big tall R, size (n*np) * n, e.g. 10,000 * 100
-  // FIXME: chnage datatype according to typename T.
-  int np = A.grid().dims()[0];
-  std::vector<T> recv(np*n*n);
-  {
-      DArray::LMatrix<T> R(n, n);
-      auto err = MPI_Allgather(R.data(), n * n, MPI_FLOAT, recv.data(), n * n, MPI_FLOAT, A.grid().comms()[0]);
-      assert(err == MPI_SUCCESS);
-  }
-
-  DArray::LMatrix<T> Rs(np*n, n);
-  int ldRs = Rs.ld();
-  for(int b=0; b<np; b++) {
-      T* recvblock = &recv.data()[n*n*b];
-      for(int j=0; j<n; j++) {
-          for (int i=0; i<n; i++)
-              Rs.data()[b*n+i+j*ldRs] = (j<i)? 0 : recvblock[i + j*n];
-      }
-  }
-
-  // 4. qr the stacked R
-  DArray::LMatrix<T> Q(np*n, n);
-  int ldq = Q.ld();
-  for (int i=0; i<ldq; i++) {
-      for (int j = 0; j < n; j++)
-          Q.data()[i + j * ldq] = (i == j) ? 1.0 : 0;
-  }
-  {
-    int m = np*n;
-    int info=-1;
-    SGEQRF( m, n, Rs.data(), Rs.ld(), &info);
-    assert(info == 0);
-
-    info=-1;
-    SORMQR(m, n, Rs.data(), Rs.ld(), Q.data(), Q.ld(), &info);
-    assert(info == 0);
-  }
-
-  // 5. post-multiply the Q of stacked R
-  // LA Q has size m*n; R Q has size n*n
-  // LA Q * R Q -> m*n
-  // (I - 2*tau*H[1]*H[1]') m*m apply to n*n -> m*n
-  DArray::LMatrix<T> RQ(m, n);
-  auto pi = A.grid().ranks()[0];
-  int ldRQ = RQ.ld(), ldQ = Q.ld();
-  for(int j=0; j<n; j++) {
-    for(int i=0; i<n; i++) {
-        RQ.data()[i+j*ldRQ] = Q.data()[n*pi + i + j*ldQ];
-    }
-    for(int i=n; i<m; i++)
-        RQ.data()[i+j*ldRQ] = 0;
-  }
-
-  info=0;
-  SORMQR(m, n, LA.data(), LA.ld(), RQ.data(), ldRQ, &info);
-  assert(info == 0);
-
-  // 6. write Q back to distributed A
-  auto grid = A.grid();
-  // grid.print(RQ, "RQ");
-  A.dereplicate_in_rows(RQ, i1, j1, i2, j2);
-
-  DArray::LMatrix<T> R(n,n);
-  DArray::copy_block(n, n, Rs.data(), Rs.ld(), R.data(), R.ld());
-  return R;
-}
-
+#include "dkernel.h"
 
 
 int main(int argc, char** argv){
@@ -97,16 +11,21 @@ int main(int argc, char** argv){
   DArray::Grid::np_to_pq(np, p, q); // np = p*q
   DArray::Grid g(MPI_COMM_WORLD, p, q);
   g.barrier();
-  cuda_init();
+  // cuda_init();
   DArray::ElapsedTimer timer;
 
-  long long int gn=5000000;
-	int d=18;
-	int k=256;
-	int qq=1;
-	float gamma=0.0001f;
-	char *filename="/project/pwu/dataset/SUSY";
+  if(argc < 8){
+      if(g.rank() == 0) printf("ERROR : Too few arguments passed to run the program.\nRequired arguments :: <dataset filename(char*)> <no of records(int)> <no of featues(int)> <rank k(int)> <gamma(double)> <power refinement q(int)>\n");
+      return 0;
+  }
 
+  char *filename = argv[1];
+  long long int gn = atoi(argv[2]);
+  int d = atoi(argv[3]);
+  int k = atoi(argv[4]); /*no of columns of the tall matrix A, B and Omega*/
+  double gamma = strtod(argv[5], NULL);
+  int qq = atoi(argv[6]);
+  double C = strtod(argv[7], NULL);
 
   if(g.rank()==0) printf("#### SVM Kernel Training (Grid::%dx%d, gn::%d, d::%d, k::%d) \n", p, q, gn, d, k);
   float *x=(float*)malloc(sizeof(float)*d*gn);
@@ -119,72 +38,104 @@ int main(int argc, char** argv){
   for(int i=0; i<gn; ++i){
     y[i]=0.0;
   }
-  read_input_file(filename, gn, d, k, x, d, y);
-  if(g.rank()==0) printf("Finished Reading input \n");
+  timer.start();
+  // if(g.rank() == 0){ 
+  read_input_file(g.rank(), filename, gn, d, x, d, y);
+  // }
+  int ms = timer.elapsed();
+  if(g.rank()==0) fmt::print("P[{},{}]: Reading input from file takes: {}(ms)\n",  g.ranks()[0], g.ranks()[1], ms);
+  // MPI_Bcast(x, (d*gn), DArray::convert_to_mpi_datatype<float>(), 0, g.comm());
+  // MPI_Bcast(y, (gn), DArray::convert_to_mpi_datatype<float>(), 0, g.comm()); 
   g.barrier();
 
   DArray::DMatrix<float> X(g, d, gn);
   DArray::DMatrix<float> Y(g, 1, gn);
-  DArray::DMatrix<float> Omega(g, gn, k);
   X.set_value_from_matrix(x, d);
   Y.set_value_from_matrix(y, 1);
-  Omega.set_normal_seed(0, 1, 1);
-  // X.collect_and_print("X");
-  // Y.collect_and_print("Y");
-  // Omega.collect_and_print("Omega");
-  if(g.rank()==0) printf("Elemental Distribution Done \n");
+  free(x);
+  free(y);
   g.barrier();
 
-  // Distributed Low-Rank Approximated Kernel
-  DArray::DMatrix<float> KO(g, gn, k);
-  KO.set_zeros();
+
+  // Distributed Low Rank Approximation of Kernel and creating a Krylov subsbace
+  DArray::DMatrix<float> K(g, gn, qq*k);
+  K.set_constant(0.0);
   {
-    DArray::LMatrix<float> Xi = X.transpose_and_replicate_in_rows(0, 0, d, gn);
-    DArray::LMatrix<float> Xj = X.replicate_in_all(0, 0, d, gn);
-    DArray::LMatrix<float> Yi = Y.transpose_and_replicate_in_rows(0, 0, 1, gn);
-    DArray::LMatrix<float> Yj = Y.replicate_in_all(0, 0, 1, gn);
-    DArray::LMatrix<float> XjT = Xj.transpose();
-    DArray::LMatrix<float> YjT = Yj.transpose();
-
-    g.barrier();
-    // if(g.rank()==0) Xi.print("Xi");
-    // if(g.rank()==0) Xj.print("Xj");
-    // if(g.rank()==0) Yi.print("Yi");
-    // if(g.rank()==0) Yj.print("Yj");
-    
-
-    DArray::LMatrix<float> buff = KO.replicate_in_rows(0, 0, gn, k);
-    DArray::LMatrix<float> Omegal = Omega.replicate_in_columns(0, 0, gn, k);
-    buff.set_zeros();
-    // if(g.rank()==0) Omegal.print("Omegal");
-    // if(g.rank()==0) buff.print("buff");
-    // if(g.rank()==0) printf("Xi[%d,%d], Xj[%d,%d], XjT[%d,%d], \nOmega_l[%d,%d] \nbuff[%d,%d] \n", Xi.dims()[0], Xi.dims()[1], Xj.dims()[0], Xj.dims()[1],
-    // XjT.dims()[0], XjT.dims()[1], Omegal.dims()[0], Omegal.dims()[1], buff.dims()[0], buff.dims()[1]);
-
-    int ln = Xi.dims()[0];
-    int gd = Xi.dims()[1];
-    int lk = Omegal.dims()[1];
+    DArray::DMatrix<float> A(g, gn, k);
+    DArray::DMatrix<float> O(g, gn, k);
+    O.set_normal_seed(0, 1, 1);
     timer.start();
-    LRA(g.rank(), gn, ln, gd, lk, Xi.data(), Xi.ld(), XjT.data(), XjT.ld(), Yi.data(), YjT.data(), buff.data(), buff.ld(), gamma, Omegal.data(), Omegal.ld());
+    DArray::LRA<float>(g.rank(), np, gn, d, k, X, Y, O, A, gamma);
+    auto Kl=K.local_view(0, 0, gn, k);
+    auto Al=A.local_view(0, 0, gn, k);
+    DArray::copy_block(Kl.dims()[0], Kl.dims()[1], &Al.data()[0], Al.ld(), &Kl.data()[0], Kl.ld());
+
+    for(int i=1; i<qq; ++i){
+      DArray::DMatrix<float> KA(g, gn, k);
+      KA.set_constant(0.0);
+      DArray::LRA<float>(g.rank(), np, gn, d, k, X, Y, A, KA, gamma);
+      auto Kl=K.local_view(0, i*k, gn, (i+1)*k);
+      auto KAl=KA.local_view(0, 0, gn, k);
+      // if(g.rank()==0) printf("K[%d,%d], KA[%d,%d], KAl[%d,%d], Kl[%d,%d]\n", K.dims()[0], K.dims()[1], KA.dims()[0], KA.dims()[1], KAl.dims()[0], KAl.dims()[1], Kl.dims()[0], Kl.dims()[1]);
+      DArray::copy_block(KAl.dims()[0], KAl.dims()[1], &KAl.data()[0], KAl.ld(), &Kl.data()[0], Kl.ld());
+      A=KA;
+    } 
     int ms = timer.elapsed();
     if(g.rank()==0) fmt::print("P[{},{}]: LRA takes: {}(ms)\n",  g.ranks()[0], g.ranks()[1], ms);
-    KO.dereplicate_in_all(buff, 0, 0, buff.dims()[0], buff.dims()[1]);
   }
+  // K.collect_and_print("K");
+  g.barrier();
 
-  // // KO.collect_and_print("KO");
-  // auto fnorm = KO.fnorm();
-  // if(g.rank()==0) fmt::print("norm(K)={}\n", fnorm);
 
   // Distributed QR
-  DArray::DMatrix<float> Q = KO.clone();
-  timer.start();
-  DArray::LMatrix<float> R = QR(Q, 0, 0, gn, k);
-  int ms = timer.elapsed();
-  if(g.rank()==0) fmt::print("P[{},{}]: QR takes: {}(ms)\n",  g.ranks()[0], g.ranks()[1], ms);
+  DArray::DMatrix<float> Q = K.clone();
+  {
+    timer.start();
+    tall_skinny_qr_factorize(Q, 0, 0, gn, qq*k);
+    int ms = timer.elapsed();
+    if(g.rank()==0) fmt::print("P[{},{}]: QR takes: {}(ms)\n",  g.ranks()[0], g.ranks()[1], ms);
+  }
+  g.barrier();
 
-  cuda_finalize();
+// Ruchi ---- KQ is the problem
+  DArray::DMatrix<float> KQ(g, gn, qq*k);
+  {
+    timer.start();
+    DArray::LRA<float>(g.rank(), np, gn, d, qq*k, X, Y, Q, KQ, gamma);
+    int ms = timer.elapsed();
+    if(g.rank()==0) fmt::print("P[{},{}]: K*Q takes: {}(ms)\n",  g.ranks()[0], g.ranks()[1], ms);
+  }
+
+
+  DArray::DMatrix<float> CC(g, qq*k, qq*k);
+  {
+    timer.start();
+    auto Ql = Q.replicate_in_rows(0, 0, gn, qq*k);
+    auto KQl = KQ.replicate_in_rows(0, 0, gn, qq*k);
+    DArray::LMatrix<float> QKQ (qq*k, qq*k);
+    int ln=Ql.dims()[0];
+    int lk=Ql.dims()[1];
+    float sone=1.0f, szero=0.0f;
+    sgemm_("T", "N", &lk, &lk, &ln, &sone, Ql.data(), &Ql.ld(), KQl.data(), &KQl.ld(), &szero, QKQ.data(), &QKQ.ld()); 
+    CC.dereplicate_in_all(QKQ, 0, 0, qq*k, qq*k);
+    int ms = timer.elapsed();
+    if(g.rank()==0) fmt::print("P[{},{}]: C=QT*KQ takes: {}(ms)\n",  g.ranks()[0], g.ranks()[1], ms);
+  }
+  // CC.collect_and_print("C after multiplication");
+
+  DArray::DMatrix<float> E(g, k, k);
+  {
+    auto El=DArray::svd(k, CC, 0, 0, k, k);
+    if(g.rank() == 0) El.print("El");
+    // E.dereplicate_in_all(0, 0, k, k);
+  }
+
   MPI_Finalize();
 }
+
+
+
+
 
 
 

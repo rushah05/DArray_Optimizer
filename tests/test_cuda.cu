@@ -135,21 +135,3 @@ void test_cuda()
 {
 	printf("Yes\n");
 }
-
-
-// // alpha=1.0, beta=0.0
-// __global__
-// void rbf(float gamma, float *Xi, float *Xj, int ldx, float &alpha, float &beta, float *Yi, float *Yj, int d, int n, float *K, int ldk){
-// 	float *Xi_sqr=(float*)malloc(sizeof(float)*n*n);
-// 	cublasGemmEx(handle, CUBLAS_OP_T, CUBLAS_OP_N, n, n, d, &alpha, Xi, CUDA_R_32F, n, Xi, CUDA_R_32F, d,
-//         &beta, Xi_sqr, CUDA_R_32F, n, CUDA_R_32F, CUBLAS_GEMM_DEFAULT_TENSOR_OP);
-
-// 	float *Xj_sqr=(float*)malloc(sizeof(float)*n*n);
-// 	cublasGemmEx(handle, CUBLAS_OP_T, CUBLAS_OP_N, n, n, d, &alpha, Xj, CUDA_R_32F, n, Xj, CUDA_R_32F, d,
-//         &beta, Xj_sqr, CUDA_R_32F, n, CUDA_R_32F, CUBLAS_GEMM_DEFAULT_TENSOR_OP);
-
-// 	float *Xij=(float*)malloc(sizeof(float)*n*n);
-// 	alpha=-2.0;
-// 	cublasGemmEx(handle, CUBLAS_OP_T, CUBLAS_OP_N, n, n, d, &alpha, Xi, CUDA_R_32F, n, Xj, CUDA_R_32F, d,
-//         &beta, Xij, CUDA_R_32F, n, CUDA_R_32F, CUBLAS_GEMM_DEFAULT_TENSOR_OP);
-// }
