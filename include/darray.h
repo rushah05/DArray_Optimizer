@@ -315,12 +315,13 @@ namespace DArray {
             assert(f);
             for(int i=0; i < m_dims[0]; i++) {
                 for(int j=0; j < m_dims[1]; j++) {
-                    fmt::print(f, "{} ", (*this)(i,j));
+                    fmt::print(f, "{}, ", (*this)(i,j));
                 }
                 fmt::print(f, "\n");
             }
             fclose(f);
         }
+
         void set_constant(T a) {
             for (int i = 0; i < m_dims[0]; i++) {
                 for (int j = 0; j < m_dims[1]; j++) {
@@ -328,6 +329,25 @@ namespace DArray {
                 }
             }
         }
+
+        void set_Identity() {
+            for (int i = 0; i < m_dims[0]; i++) {
+                for (int j = 0; j < m_dims[1]; j++) {
+                    if(i == j) (*this)(i,j) = 1.0;
+                    else (*this)(i,j) = 0.0;
+                }
+            }
+        }
+
+        void diag(LMatrix<T> E) {
+            for (int i = 0; i < m_dims[0]; i++) {
+                for (int j = 0; j < m_dims[1]; j++) {
+                    if(i == j) (*this)(i,j) = E.data()[i];
+                    else (*this)(i,j) = 0.0;
+                }
+            }
+        }
+
         void set_function(std::function<T (int, int)> func) {
             for (int i = 0; i < dims()[0]; i++) {
                 for (int j = 0; j < dims()[1]; j++) {
@@ -1005,6 +1025,7 @@ namespace DArray {
         void dereplicate_in_all(LMatrix<T> A, int i1, int j1, int i2, int j2) {
             Tracer tracer(__FUNCTION__ );
             int mm = A.dims()[0], nn = A.dims()[1];
+            // printf("mm::%d [%d,%d] nn::%d [%d, %d]\n", mm, i2, i1, nn, j2, j1);
             assert(mm == i2-i1 && nn == j2-j1);
             auto i12 = global_to_local_index({i1,i2}, grid().ranks()[0], grid().dims()[0], 0);
             auto j12 = global_to_local_index({j1,j2}, grid().ranks()[1], grid().dims()[1], 0);
@@ -1064,7 +1085,6 @@ namespace DArray {
                 }
             }
         }
-
 
         void permute_rows_inverse_ipiv(int i1, int j1, int i2, int j2, int* ipiv, int n_ipiv) {
             Tracer tracer(__FUNCTION__);

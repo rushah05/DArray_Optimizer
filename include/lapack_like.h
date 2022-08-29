@@ -1,5 +1,6 @@
 #pragma once
 #include "darray.h"
+#include "cblas_like.h"
 #include "blas_like.h"
 #include "utils.h"
 
@@ -403,7 +404,8 @@ namespace DArray {
         DArray::LMatrix<float> work(lwork, 1);
 
         sgesvd_("A", "A", &k, &k, LA.data(), &LA.ld(), S.data(), U.data(), &U.ld(), VT.data(), &VT.ld(), work.data(), &lwork, &info);
-
-        return S;
+        DArray::LMatrix<float> diagS(k,k);
+        diagS.diag(S);
+        return diagS;
     }
 }

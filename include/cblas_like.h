@@ -7,10 +7,10 @@ void sgemm_(const char *ta, const char *tb, int *m, int *n, int *k, float *alpha
             float *B, int *ldb, float *beta, float *C, int *ldc);
 void dgemm_(const char *ta, const char *tb, int *m, int *n, int *k, double *alpha, double *A, int *lda,
             double *B, int *ldb, double *beta, double *C, int *ldc);
-
 void strsm_(const char *side, const char *uplo, const char *transa, const char *diag, int *m, int *n, float *alpha, float *A, int *lda, float *B, int *ldb);
-
 void ssyrk_(const char *uplo, const char* trans, int *n, int *k, float *alpha, float *A, int *lda, float *beta, float *c, int *ldc);
+void sgemv_(const char *ta, int *m, int *n, float *alpha, float *A, int *lda, float *X, int *incx, float *beta, float *Y, int *incy);
+float sdot_(int *n, float *X, int *incx, float *Y, int *incy);
 
     // LAPACK
 void spotrf_(const char *uplo, int *N, float *A, int *lda, int *info);

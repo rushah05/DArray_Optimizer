@@ -15,8 +15,8 @@ void read_input_file(int rank, char *filename, long long int gn, int d, float* X
     for(;i<gn;++i){
         if((read=getline(&line, &len, f))!=-1){
             Y[i] = atof(strtok(line," "));
-            if(Y[i] == 1) Y[i] = 1;
-            else Y[i] = -1;
+            // if(Y[i] == 1) Y[i] = 1;
+            // else Y[i] = -1;
             char *features = strtok (NULL," ");
             while (features != NULL){
                 std::string f(features);
