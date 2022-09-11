@@ -392,19 +392,19 @@ namespace DArray {
         assert( n == j2 - j1);
         assert( m == i2 - i1);
         
-        DArray::LMatrix<float> S(k,1);
-        DArray::LMatrix<float> U(k,k);
-        DArray::LMatrix<float> VT(k,k);
+        DArray::LMatrix<T> S(k,1);
+        DArray::LMatrix<T> U(k,k);
+        DArray::LMatrix<T> VT(k,k);
 
         int info, lwork = -1;
-        float tmp;
+        T tmp;
         //perform a svd on Q^T*A
         sgesvd_("A", "A", &k, &k, LA.data(), &LA.ld(), S.data(), U.data(), &U.ld(), VT.data(), &VT.ld(), &tmp, &lwork, &info);
         lwork = tmp;
-        DArray::LMatrix<float> work(lwork, 1);
+        DArray::LMatrix<T> work(lwork, 1);
 
         sgesvd_("A", "A", &k, &k, LA.data(), &LA.ld(), S.data(), U.data(), &U.ld(), VT.data(), &VT.ld(), work.data(), &lwork, &info);
-        DArray::LMatrix<float> diagS(k,k);
+        DArray::LMatrix<T> diagS(k,k);
         diagS.diag(S);
         return diagS;
     }

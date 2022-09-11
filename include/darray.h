@@ -13,6 +13,7 @@
 #include <fmt/format.h>
 #include <fmt/ranges.h>
 #include "utils.h"
+#include <cmath>
 
 #define ASSERT_NOT_IMPLEMENTED assert(0)
 
@@ -528,7 +529,7 @@ namespace DArray {
             }
         }
 
-        void set_value_from_matrix(float* x, int ldx) {
+        void set_value_from_matrix(T* x, int ldx) {
             auto d = m_grid.dims();
             auto r = m_grid.ranks();
             for (int i = 0; i < m_ldims[0]; i++) {
@@ -552,6 +553,17 @@ namespace DArray {
                 }
             }
         }
+
+
+        void to_double(DMatrix<double> E) {
+            for (int i = 0; i < m_ldims[0]; i++) {
+                for (int j = 0; j < m_ldims[1]; j++) {
+                    E.data()[i+j*lld()] = (*this)(i, j);
+                }
+            }
+        }
+
+
         // forbenius norm
         double fnorm() {
             double sqr_sum = 0;
@@ -1025,7 +1037,7 @@ namespace DArray {
         void dereplicate_in_all(LMatrix<T> A, int i1, int j1, int i2, int j2) {
             Tracer tracer(__FUNCTION__ );
             int mm = A.dims()[0], nn = A.dims()[1];
-            // printf("mm::%d [%d,%d] nn::%d [%d, %d]\n", mm, i2, i1, nn, j2, j1);
+            // printf("mm::%d [%d,%d] nn::%d [%d, %d]\n", mm, i1, i2, nn, j1, j2);
             assert(mm == i2-i1 && nn == j2-j1);
             auto i12 = global_to_local_index({i1,i2}, grid().ranks()[0], grid().dims()[0], 0);
             auto j12 = global_to_local_index({j1,j2}, grid().ranks()[1], grid().dims()[1], 0);
@@ -1071,6 +1083,22 @@ namespace DArray {
                          grid().comm(), &status);
             assert(err == MPI_SUCCESS);
 
+            return recvbuf;
+        }
+
+        LMatrix<T> copy_lower_to_upper(LMatrix<T> A, int i1, int i2) {
+            Tracer tracer(__FUNCTION__ );
+            assert(grid().dims()[0] == grid().dims()[1]);
+            int p = grid().ranks()[0], q = grid().ranks()[1];
+            auto lij = global_to_local_index({i1,i2}, p, grid().dims()[0], 0);
+            int nn = A.dims()[1];
+            int recv_mm = lij[1] - lij[0];
+            LMatrix<T> recvbuf(nn, recv_mm);
+            MPI_Status status;
+            int err = MPI_Sendrecv(A.data(),nn*A.dims()[0], convert_to_mpi_datatype<T>(), grid().convert_to_linear(q,p), q+p,
+                         recvbuf.data(), nn*recv_mm, convert_to_mpi_datatype<T>(), grid().convert_to_linear(q,p), q+p,
+                         grid().comm(), &status);
+            assert(err == MPI_SUCCESS);
             return recvbuf;
         }
 

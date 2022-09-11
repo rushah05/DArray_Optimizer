@@ -98,11 +98,9 @@ void printVectorDeviceBlock(char *filename, int m, T* dA)
 }
 
 
-template<typename FloatType, typename GammaType>
+template<typename T>
 __global__
-void rbf( int m, int n, FloatType *buf, int ldb,
-				 FloatType *XI, FloatType *XJ, FloatType *XIJ, int ldxij,
-				 GammaType gamma, FloatType *YI, FloatType *YJ)
+void rbf( int m, int n, T *buf, int ldb, T *XI, T *XJ, T *XIJ, int ldxij, T gamma, T *YI, T *YJ)
 {
 	int i=blockIdx.x*blockDim.x + threadIdx.x;
 	int j=blockIdx.y*blockDim.y + threadIdx.y;
@@ -131,15 +129,6 @@ void vecnorm(FloatType *Zd, int ldz, FloatType *ZI, int m, int k){
 	}
 }
 
-__global__ 
-void fnorm( int m, int n, double *buf, int B, double *XI, double *XJ, double *XIJ, int ldxij, double gamma, double *YI, double *YJ, double *acc){
-	int i=blockIdx.x*blockDim.x + threadIdx.x;
-	int j=blockIdx.y*blockDim.y + threadIdx.y;
-
-	if (i<m && j<n) 
-		// buf[i+j*ldb] = YI[i]*YJ[j]*__expf(-gamma*(XI[i] + XJ[j] - 2*XIJ[i+j*ldxij]));
-		acc += 0;
-}
 
 
 __global__ void s2h(float *Z, __half *hZ, int ldz, int m, int n){
@@ -234,7 +223,7 @@ void LRA(int rank, int lm, int ln, int ld, int lk, float* Xi, int ldxi, float* X
             // printVectorDeviceBlock("Yj.csv", jb, &dYj[j]);
 
             dim3 numBlocks((ib+threadsPerBlock.x-1)/threadsPerBlock.x, (jb+threadsPerBlock.y-1)/threadsPerBlock.y );
-            rbf<<<numBlocks, threadsPerBlock>>>(ib, jb, dk, ib, dXi_sqr, dXj_sqr, dXij, _IOFBF, gamma, &dYi[i], &dYj[j]);
+            rbf<<<numBlocks, threadsPerBlock>>>(ib, jb, dk, ib, dXi_sqr, dXj_sqr, dXij, dK, gamma, &dYi[i], &dYj[j]);
 
             // printMatrixDeviceBlock("K.csv", ib, jb, dk, ib);
             // printMatrixDeviceBlock("O.csv", jb, lk, &dO[j], ldo);
