@@ -12,7 +12,17 @@ void ssyrk_(const char *uplo, const char* trans, int *n, int *k, float *alpha, f
 void sgemv_(const char *ta, int *m, int *n, float *alpha, float *A, int *lda, float *X, int *incx, float *beta, float *Y, int *incy);
 float sdot_(int *n, float *X, int *incx, float *Y, int *incy);
 
+void dsyrk_(const char *uplo, const char* trans, int *n, int *k, double *alpha, double *A, int *lda, double *beta, double *c, int *ldc);
+double ddot_(int *n, double *X, int *incx, double *Y, int *incy);
+double dnrm2_(int *n, double *X, int *incx);
+int idamax_(int *n, double *X, int *incx);
+int idamin_(int *n, double *X, int *incx);
+void dscal_(int *n, double *dA, double *dX, int *incx);
+
     // LAPACK
+// void dpotrs_(char* UPLOp, int* N, long* NRHS, double* A, long* lda, double* B, long* ldb, long* info);
+void dpotrs_(const char *uplo, int *N, int* NRHS, double *A, int *lda, double *B, int *ldb, int *info);	
+void dpotrf_(const char *uplo, int *N, double *A, int *lda, int *info);
 void spotrf_(const char *uplo, int *N, float *A, int *lda, int *info);
 void sgetrf_(int *M, int *N, float *A, int *lda, int *ipiv, int *info);
 void sgeqrf_(int *M, int *N, float *A, int *lda, float *tau, float *work, int *lwork, int *info);
@@ -20,7 +30,6 @@ void dgeqrf_(int *M, int *N, double *A, int *lda, double *tau, double *work, int
 void sormqr_(const char *side, const char *trans, int *m, int *n, int *k, float *A, int *lda, float *tau, float *C, int *ldc, float *work, int *lwork, int *info);
 void sgesvd_(const char *jobu, const char *jobvt, int *m, int *n, float *A, int *lda, float *S, float *U, int *ldu, float *VT, int *ldvt, float *work, int *lwork, int *info);
 void ssyevd_(const char *ta, const char *uplo, int *N, float *A, int *lda, float *W, float *work, int *lwork, float *iwork, int *liwork, int *info);
-
 }
 
 

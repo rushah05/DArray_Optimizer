@@ -1,0 +1,11 @@
+*********************************
+*********************************
+SUSY n=1000000 d=18 k=32 qq=1 (N 4 np 4)
+P[0,0]: libsvm read takes: 7315 (ms)
+P[0,0]: training and label data distribution across 16 processes takes : 59 (ms)
+in 20 chunks. Progress: 400 
+P[0,0]: lra takes : 4019153 (ms)
+
+real	67m9.403s
+user	0m0.012s
+sys	0m0.031s

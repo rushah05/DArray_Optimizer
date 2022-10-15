@@ -1,0 +1,15 @@
+
+The following have been reloaded with a version change:
+  1) cmake/3.21.3 => cmake/3.17.3
+
+*********************************
+*********************************
+COVTYPE n=580863 d=54 k=32 q=1
+P[0,0]: libsvm read takes: 1882 (ms)
+P[0,0]: training and label data distribution across 9 processes takes : 185 (ms)
+in 8 chunks. Progress: 64 
+P[0,0]: lra takes : 1261 (ms)
+
+real	0m14.061s
+user	0m0.012s
+sys	0m0.030s

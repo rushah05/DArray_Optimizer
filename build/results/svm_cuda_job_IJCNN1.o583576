@@ -1,0 +1,24 @@
+
+The following have been reloaded with a version change:
+  1) cmake/3.21.3 => cmake/3.17.3
+
+
+*********************************
+*********************************
+ijcnn1 n=49990 d=22 k=256 qq=1 (N 1 np 4)
+#### SVM Kernel Training (Grid::2x2, n::10000, d::22, k::256) 
+P[0,0]: Reading input from file takes: 37 (ms)
+Starting low rank approximation
+P[0,0]: LRA (low-rank approximation of kernel) - K(10000,10000) ~ G(10000,256): 1962(ms)
+P[0,0]: Creating a Krylov subspace... (10000, 256): 2(ms)
+P[0,0]: QR takes: 76 (ms)
+P[0,0]: K*Q takes: 1877(ms)
+P[0,0]: C=QT*KQ takes: 38(ms)
+P[0,0]: SVD takes: 13(ms)
+P[0,0]: Creating Low Rank Approximator Z takes: 15(ms)
+fnKZtZ::497580960, fnK::336372200, fnorm(K-ZtZ)/fnorm(K)=1.4792571
+P[0,0]: Calculating norm(K-ZZT) takes: 7056(ms)
+
+real	0m13.782s
+user	0m0.015s
+sys	0m0.024s

@@ -1,92 +1,102 @@
 #include "darray.h"
 #include "blas_like.h"
 
-int main(int argc, char** argv){
+extern void cuda_init();
+extern void cuda_finalize();
+extern void tc_gemm(int rank, int m, int k, int n, float *A, int lda, float *BB, int ldb, float *C, int ldc, float alpha=1, float beta=0);
+
+int main(int argc, char** argv) {
     MPI_Init(&argc, &argv);
     int np, p, q;
     MPI_Comm_size(MPI_COMM_WORLD, &np);
-    DArray::Grid::np_to_pq(np, p, q); // np = p*q
+    DArray::Grid::np_to_pq(np, p, q);
     DArray::Grid g(MPI_COMM_WORLD, p, q);
+    cuda_init();
+    if (g.rank()==0) printf("#### test grid pxq %dx%d #### \n", p, q);
     g.barrier();
+    DArray::ElapsedTimer timer;
 
-    int n=32;
-    int d=8;
-    DArray::DMatrix<float> X(g, d, n);
-    X.set_function([](int gi, int gj) ->float {
-        return gi+gj/10.0;
+    int n = atol(argv[1]);
+    int k = atoi(argv[2]);
+    int bs = atol(argv[3]);
+    if (g.rank()==0) printf("#### Starting GEMM n=%d, k=%d, bs=%d  #### \n", n, k, bs);
+    DArray::DMatrix<float> K(g, bs, bs);
+    K.set_function([](int gi, int gj) ->float {
+        return gi+gj+2/10.0;
     });
+    DArray::DMatrixDescriptor<float> Kdesc{K, 0, 0, bs, bs};
 
-    // X.collect_and_print("X");
+    DArray::DMatrix<float> O(g, n, k);
+    O.set_function([](int gi, int gj) ->float {
+        return gi+gj+2/10.0;
+    });
+    DArray::DMatrixDescriptor<float> Odesc{O, 0, 0, n, k};
 
-    float sone=1.0f;
-    float szero=0.0f;
-    int bs=16;
+    DArray::DMatrix<float> A(g, n, k);
+    A.set_constant(0.0);
+    DArray::DMatrixDescriptor<float> Adesc{A, 0, 0, n, k};
 
-    for(int i=0, j=0; i<n && j<n; i+=bs, j+=bs) {
-        int ib = std::min(bs, n-i);
-        int jb = std::min(bs, n-j);
+    timer.start();
+    auto Ki=Kdesc.matrix.replicate_in_rows(Kdesc.i1, Kdesc.j1, Kdesc.i2, Kdesc.j2);
+    auto Oj=Odesc.matrix.replicate_in_columns(Odesc.i1, Odesc.j1, bs, Odesc.j2);
+    auto Aij=Adesc.matrix.local_view(Adesc.i1, Adesc.j1, bs, Adesc.j2);
+    // // if(g.rank() == 0) printf("Ki[%d,%d]%d,  Oj[%d,%d]%d,  Aij[%d,%d]%d \n", Ki.dims()[0], Ki.dims()[1], Ki.ld(),  Oj.dims()[0], Oj.dims()[1], Oj.ld(), Aij.dims()[0], Aij.dims()[1], Aij.ld());
+    tc_gemm(g.rank(), Aij.dims()[0], Aij.dims()[1], Ki.dims()[1], Ki.data(), Ki.ld(), Oj.data(), Oj.ld(), Aij.data(), Aij.dims()[0]);
+    // float one=1.0f, zero=0.0f;
+    // sgemm_("N", "N", &Aij.dims()[0], &Aij.dims()[1], &Ki.dims()[1], &one, Ki.data(), &Ki.ld(), Oj.data(), &Oj.ld(), &zero, Aij.data(), &Aij.ld());
+    int ms = timer.elapsed();
+    if(g.rank()==0) fmt::print("P[{},{}]: 1 block of K*O takes : {} (ms)\n",  g.ranks()[0], g.ranks()[1], ms);
 
-        auto Xi=X.replicate_in_all(0, i, d, i+ib).transpose();
-        auto Xj=X.replicate_in_all(0, j, d, j+jb).transpose();
-        DArray::LMatrix<float> K(ib, jb);
-        if(g.rank()==0) printf("Xi[%d,%d] Xj[%d,%d] K[%d,%d] \n", Xi.dims()[0], Xi.dims()[1], Xj.dims()[0], Xj.dims()[1], K.dims()[0], K.dims()[1]);
-        sgemm_("N", "T", &ib, &jb, &d, &sone, Xi.data(), &Xi.ld(), Xj.data(), &Xj.ld(), &szero, K.data(), &K.ld());
-        
-        if(g.rank()==0) Xi.print("Xi");
-        if(g.rank()==0) Xj.print("Xj");
-        if(g.rank()==0) K.print("K");
-        return 0;
-    }
+    int chunks = (n+bs-1)/bs;
+    if(g.rank() == 0) printf("in %d chunks. Progress: %d \n", chunks, chunks*chunks); 
 
+    // timer.start();
+    // for(int i=0; i<n; i+=bs){
+    //     int ib=std::min(bs, n-i);
+    //     auto AA=Adesc.matrix.local_view(Adesc.i1, Adesc.j1, Adesc.i1+ib, Adesc.j2);
 
-    // X.collect_and_print("X");
-    // auto Xi = X.transpose_and_replicate_in_rows(0, 0, d, n);
-    // auto Xj = X.replicate_in_columns(0, 0, d, n);
-    // if(g.rank()==0) Xi.print("Xi");
-    // if(g.rank()==0) Xj.print("Xj");
-    // // DArray::LMatrix<float> Kl(Xi.dims()[0], Xj.dims()[1]);
-    // DArray::DMatrix<float> K(g, n, n);
-    // auto Kl=K.replicate_in_all(0, 0, n, n);
-    // float sone=1.0f, szero=0.0f;
-    // if(g.rank()==0) printf("Xi[%d,%d] Xj[%d,%d] Kl[%d,%d] \n", Xi.dims()[0], Xi.dims()[1], Xj.dims()[0], Xj.dims()[1], Kl.dims()[0], Kl.dims()[1]);
-    // sgemm_("N", "N", &Xi.dims()[0], &Xj.dims()[1], &Xi.dims()[1], &sone, Xi.data(), &Xi.ld(), Xj.data(), &Xj.ld(), &szero, Kl.data(), &Kl.ld());
-    // K.dereplicate_in_all(Kl, 0, 0, n, n);
-
-    // K.collect_and_print("K");
-
-    // DArray::DMatrix<float> K(g, n, n);
-    // K.set_constant(0.0);
-    // {
-    //     auto Xi = X.transpose_and_replicate_in_rows(0, 0, d, n);
-    //     auto Xj = X.replicate_in_columns(0, 0, d, n);
-    //     // auto Xj=Xc.transpose();
-    //     int lm=Xi.dims()[0];
-    //     int ln=Xj.dims()[1];
-    //     int ld=Xi.dims()[1];
-    //     DArray::LMatrix<float> Kl(lm, ln);
-    //     float sone=1.0f, szero=0.0f;
-    //     sgemm_("N", "N", &lm, &ln, &ld, &sone, Xi.data(), &Xi.ld(), Xj.data(), &Xj.ld(), &szero, Kl.data(), &Kl.ld());
-    //     K.dereplicate_in_columns(Kl, 0, 0, lm, ln);
-    //     K.dereplicate_in_rows(Kl, 0, 0, lm, ln);
-    //     if(g.rank()==0) printf("Xi[%d,%d] Xj[%d,%d] Kl[%d,%d] \n", Xi.dims()[0], Xi.dims()[1], Xj.dims()[0], Xj.dims()[1], Kl.dims()[0], Kl.dims()[1]);
+    //     for(int j=0; j<n; j+=bs){
+    //         int jb=std::min(bs, n-j);
+    //         //  if(g.rank()== 0) printf("[%d,%d] i+ib=%d j+jb=%d bs=%d\n", i, j, i+ib, j+jb, bs);
+    //         auto Ki=Kdesc.matrix.replicate_in_rows(Kdesc.i1, Kdesc.j1, Kdesc.i1+ib, Kdesc.j1+jb);
+    //         auto Oj=Odesc.matrix.replicate_in_columns(Odesc.i1, Odesc.j1, Odesc.i1+jb, Odesc.j2);
+    //         DArray::LMatrix<float> Aij(Ki.dims()[0], Oj.dims()[1]);
+    //         tc_gemm(g.rank(), Ki.dims()[0], Oj.dims()[1], Ki.dims()[1], Ki.data(), Ki.dims()[0], Oj.data(), Oj.dims()[0], Aij.data(), Aij.dims()[0]);
+    //         DArray::copy_block(Aij.dims()[0], Aij.dims()[1], Aij.data(), Aij.ld(), AA.data(), AA.ld());
+    //     }
     // }
-    // K.collect_and_print("K");
 
-    // DArray::DMatrix<float> KK(g, n, n);
-    // KK.set_constant(0.0);
-    // {
-    //     auto Xc=X.replicate_in_all(0, 0, d, n);
-    //     auto Xi=Xc.transpose();
-    //     auto Xj=Xc;
-    //     auto Kl=KK.replicate_in_all(0, 0, n, n);
-    //     float sone=1.0f, szero=0.0f;
-    //     sgemm_("N", "N", &n, &n, &d, &sone, Xi.data(), &Xi.ld(), Xj.data(), &Xj.ld(), &szero, Kl.data(), &Kl.ld());
-    //     KK.dereplicate_in_all(Kl, 0, 0, n, n);
-    //     if(g.rank()==0) printf("Xi[%d,%d] Xj[%d,%d] Kl[%d,%d] \n", Xi.dims()[0], Xi.dims()[1], Xj.dims()[0], Xj.dims()[1], Kl.dims()[0], Kl.dims()[1]);
-    // }
-    // KK.collect_and_print("K");
+    // ms = timer.elapsed();
+    // if(g.rank()==0) fmt::print("P[{},{}]: Out-Of-Core K*O takes : {} (ms)\n",  g.ranks()[0], g.ranks()[1], ms);
 
-
-    
+    cuda_finalize();
     MPI_Finalize();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// for(int kk=0; kk<n; kk+=bs){
+//         int ke=std::min(bs, n-kk);
+//         // printf("[0, %d], ke=%d\n", kk, ke);
+//         auto Ki=Kdesc.matrix.replicate_in_rows(Kdesc.i1, Kdesc.j1, Kdesc.i2, Kdesc.j1+ke);
+//         auto Oj=Odesc.matrix.replicate_in_columns(Odesc.i1+kk, Odesc.j1, Odesc.i1+kk+ke, Odesc.j2);
+//         // DArray::LMatrix<float> Aij(Ki.dims()[0], Oj.dims()[1]);
+//         // tc_gemm(g.rank(), Ki.dims()[0], Oj.dims()[1], Ki.dims()[1], Ki.data(), Ki.dims()[0], Oj.data(), Oj.dims()[0], Aij.data(), Aij.dims()[0]);
+
+//         // auto AA=Adesc.matrix.local_view(Adesc.i1, Adesc.j1, Adesc.i2, Adesc.j2);
+//         // DArray::copy_block(Aij.dims()[0], Aij.dims()[1], Aij.data(), Aij.ld(), AA.data(), AA.ld());
+//     }

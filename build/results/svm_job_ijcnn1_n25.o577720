@@ -1,0 +1,75 @@
+=================================================================================================
+IJCNN1 n=49990 d=22 k=256 qq=3
+=================================================================================================
+
+*********************************
+*********************************
+ijcnn1 n=49990 d=22 k=256 qq=4 (N 1 np 25)
+#### SVM Kernel Training (Grid::5x5, n::49990, d::22, k::256) 
+P[0,0]: Reading input from file takes: 179 (ms)
+P[0,0]: LRA (low-rank approximation of kernel) - K(49990,49990) ~ G(49990,256): 9560(ms)
+P[0,0]: Creating a Krylov subspace... (49990, 1024): 25612(ms)
+P[0,0]: QR takes: 1865 (ms)
+P[0,0]: K*Q takes: 9920(ms)
+P[0,0]: C=QT*KQ takes: 370(ms)
+P[0,0]: SVD takes: 911(ms)
+P[0,0]: Creating Low Rank Approximator Z takes: 130(ms)
+fnKAtA::1617197300, fnK::19789402, fnorm(K-AtA)/fnorm(K)=81.720375
+
+real	0m56.096s
+user	0m0.012s
+sys	0m0.037s
+
+*********************************
+*********************************
+ijcnn1 n=49990 d=22 k=256 qq=5 (N 1 np 25)
+#### SVM Kernel Training (Grid::5x5, n::49990, d::22, k::256) 
+P[0,0]: Reading input from file takes: 177 (ms)
+P[0,0]: LRA (low-rank approximation of kernel) - K(49990,49990) ~ G(49990,256): 9570(ms)
+P[0,0]: Creating a Krylov subspace... (49990, 1280): 34111(ms)
+P[0,0]: QR takes: 2747 (ms)
+P[0,0]: K*Q takes: 10422(ms)
+P[0,0]: C=QT*KQ takes: 428(ms)
+P[0,0]: SVD takes: 1764(ms)
+P[0,0]: Creating Low Rank Approximator Z takes: 162(ms)
+fnKAtA::1307216100, fnK::18007490, fnorm(K-AtA)/fnorm(K)=72.59291
+
+real	1m6.799s
+user	0m0.013s
+sys	0m0.036s
+
+*********************************
+*********************************
+ijcnn1 n=49990 d=22 k=256 qq=6 (N 1 np 25)
+#### SVM Kernel Training (Grid::5x5, n::49990, d::22, k::256) 
+P[0,0]: Reading input from file takes: 180 (ms)
+P[0,0]: LRA (low-rank approximation of kernel) - K(49990,49990) ~ G(49990,256): 9675(ms)
+P[0,0]: Creating a Krylov subspace... (49990, 1536): 43021(ms)
+P[0,0]: QR takes: 4125 (ms)
+P[0,0]: K*Q takes: 11186(ms)
+P[0,0]: C=QT*KQ takes: 527(ms)
+P[0,0]: SVD takes: 3065(ms)
+P[0,0]: Creating Low Rank Approximator Z takes: 195(ms)
+fnKAtA::971348800, fnK::15670110, fnorm(K-AtA)/fnorm(K)=61.987362
+
+real	1m19.489s
+user	0m0.012s
+sys	0m0.042s
+
+*********************************
+*********************************
+ijcnn1 n=49990 d=22 k=256 qq=7 (N 1 np 25)
+#### SVM Kernel Training (Grid::5x5, n::49990, d::22, k::256) 
+P[0,0]: Reading input from file takes: 181 (ms)
+P[0,0]: LRA (low-rank approximation of kernel) - K(49990,49990) ~ G(49990,256): 9664(ms)
+P[0,0]: Creating a Krylov subspace... (49990, 1792): 51409(ms)
+P[0,0]: QR takes: 5679 (ms)
+P[0,0]: K*Q takes: 11795(ms)
+P[0,0]: C=QT*KQ takes: 606(ms)
+P[0,0]: SVD takes: 4731(ms)
+P[0,0]: Creating Low Rank Approximator Z takes: 227(ms)
+fnKAtA::626871000, fnK::12727384, fnorm(K-AtA)/fnorm(K)=49.25372
+
+real	1m32.229s
+user	0m0.016s
+sys	0m0.036s

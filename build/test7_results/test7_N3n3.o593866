@@ -1,0 +1,16 @@
+
+The following have been reloaded with a version change:
+  1) cmake/3.21.3 => cmake/3.17.3
+
+*********************************
+*********************************
+#### test grid pxq 3x3 #### 
+#### Starting GEMM n=500000, k=50, bs=256  #### 
+Ki[166667,256]166667,  Oj[256,17]256,  Aij[166667,17]166667 
+P[0,0]: 1 block of K*O takes : 660 (ms)
+in 1954 chunks. Progress: 3818116 
+P[0,0]: Out-Of-Core K*O takes : 943181 (ms)
+
+real	15m52.021s
+user	0m0.016s
+sys	0m0.029s

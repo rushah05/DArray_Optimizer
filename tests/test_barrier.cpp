@@ -1,119 +1,632 @@
+// #include "darray.h"
+// #include "read_input.h"
+// #include "dkernel.h"
+// #include "lapack_like.h"
+// #include "dbarrier.h"
+
+// // extern void cuda_init();
+// // extern void cuda_finalize();
+
+// // template<typename T>
+// // T gaussrand(){
+// //     static T v1,z v2, s;
+// //     static int phase = 0;
+// //     T x;
+    
+// //     if(phase == 0) {
+// //         do {
+// //             T U1 = (T)rand() / RAND_MAX;
+// //             T U2 = (T)rand() / RAND_MAX;
+            
+// //             v1 = 2 * U1 - 1;
+// //             v2 = 2 * U2 - 1;
+// //             s = v1 * v1 + v2 * v2;
+// //         } while(s >= 1 || s == 0);
+        
+// //         x = v1 * sqrt(-2 * log(s) / s);
+// //     } else
+// //         x = v2 * sqrt(-2 * log(s) / s);
+    
+// //     phase = 1 - phase;
+// //     return x;
+// // }
+
+// int main(int argc, char** argv){
+// //     MPI_Init(&argc, &argv);
+
+// //     int np, p, q;
+// //     MPI_Comm_size(MPI_COMM_WORLD, &np);
+// //     DArray::Grid::np_to_pq(np, p, q);
+// //     DArray::Grid g(MPI_COMM_WORLD, p, q);
+// //     cuda_init();
+// //     DArray::ElapsedTimer timer;
+
+// //     if(argc < 7){
+// //       if(g.rank() == 0) printf("ERROR : Too few arguments passed to run the program.\nRequired arguments :: <dataset filename(char*)> <no of records(int)> <no of featues(int)> <rank k(int)> <gamma(float)> <power refinement q(int)>\n");
+// //         return 0;
+// //     }
+
+// //     char *filename = argv[1];
+// //     long n = atol(argv[2]);
+// //     long d = atol(argv[3]);
+// //     int k = atoi(argv[4]); /*no of columns of the tall matrix A, B and Omega*/ 
+// //     float gamma = strtod(argv[5], NULL);
+// //     int qq = atoi(argv[6]);
+// //     double C = strtod(argv[7], NULL);
+
+// //     float *x=(float*)malloc(sizeof(float)*d*n);
+// //     float *y=(float*)malloc(sizeof(float)*n);
+// //     for(int i=0; i<d; i++){
+// //         for(int j=0; j<n; j++){
+// //             x[i+j*d]=0.0;
+// //         }
+// //     }
+    
+// //     for(int i=0; i<n; ++i){
+// //         y[i]=0.0;
+// //     }
+
+// //     timer.start();
+// //     read_input_file<float>(filename, n, d, x, d, y);
+// //     int ms = timer.elapsed();
+// //     if(g.rank()==0) fmt::print("P[{},{}]: libsvm read takes: {} (ms)\n",  g.ranks()[0], g.ranks()[1], ms);
+// //     g.barrier();
+
+// //     DArray::DMatrix<float> X(g, d, n);
+// //     DArray::DMatrix<float> Y(g, 1, n);
+
+// //     timer.start();
+// //     X.set_value_from_matrix(x, d);
+// //     Y.set_value_from_matrix(y, 1);
+// //     ms = timer.elapsed();
+// //     if(g.rank()==0) fmt::print("P[{},{}]: training and label data distribution across {} processes takes : {} (ms)\n",  g.ranks()[0], g.ranks()[1], np, ms);
+// //     g.barrier();
+
+// //     DArray::DMatrix<float> A(g, n, k);
+// //     A.set_constant(0.0);
+// //     {
+// //         DArray::DMatrix<float> O(g, n, k);
+// //         O.set_function([](int gi, int gj) ->float {
+// //             return gaussrand<float>();
+// //         });
+// //         timer.start();
+// //         DArray::LRA<float>(g, n, d, k, X, Y, O, A, gamma);
+// //         ms = timer.elapsed();
+// //         if(g.rank()==0) fmt::print("P[{},{}]: lra takes : {} (ms)\n",  g.ranks()[0], g.ranks()[1], ms);
+// //     }
+// //     // A.collect_and_print("A");
+// //     g.barrier();
+
+// //     // Distributed QR
+// //     DArray::DMatrix<float> Q = A.clone();
+// //     {
+// //         timer.start();
+// //         DArray::tall_skinny_qr_factorize(Q, 0, 0, n, qq*k);
+// //         int ms = timer.elapsed();
+// //         if(g.rank()==0) fmt::print("P[{},{}]: QR takes: {} (ms)\n",  g.ranks()[0], g.ranks()[1], ms);
+// //     }
+// //     // Q.collect_and_print("Q");
+// //     g.barrier();
+
+
+// //     // Distributed KQ
+// //     DArray::DMatrix<float> KQ(g, n, qq*k);
+// //     KQ.set_constant(0.0);
+// //     {
+// //         timer.start();
+// //         DArray::LRA<float>(g, n, d, k, X, Y, Q, KQ, gamma);
+// //         int ms = timer.elapsed();
+// //         if(g.rank()==0) fmt::print("P[{},{}]: K*Q takes: {}(ms)\n",  g.ranks()[0], g.ranks()[1], ms);
+// //     }
+// //     // KQ.collect_and_print("KQ");
+// //     g.barrier();
+
+
+// //     DArray::DMatrix<float> CC(g, qq*k, qq*k);
+// //     CC.set_constant(0.0);
+// //     {
+// //         timer.start();
+// //         auto Ql=Q.transpose_and_replicate_in_rows(0, 0, n , qq*k);
+// //         auto KQl=KQ.replicate_in_columns( 0, 0, n, qq*k);
+// //         auto Cl=CC.local_view(0, 0, qq*k, qq*k);
+        
+// //         tc_gemm(g.rank(), Cl.dims()[0], Cl.dims()[1], Ql.dims()[1], Ql.data(), Ql.ld(), KQl.data(), KQl.ld(), Cl.data(), Cl.ld());
+// //         int ms = timer.elapsed();
+// //         if(g.rank()==0) fmt::print("P[{},{}]: C=QT*KQ takes: {}(ms)\n",  g.ranks()[0], g.ranks()[1], ms);
+// //     }
+// //     g.barrier();
+// //     // CC.collect_and_print("CC");
+
+// //     DArray::DMatrix<float> U(g, k, k);
+// //     U.set_constant(0.0);
+// //     {
+// //         timer.start();
+// //         auto Ul = U.replicate_in_all(0, 0, k, k);
+// //         auto Cl = CC.replicate_in_all(0, 0, k, k);
+// //         auto Ud = DArray::svd<float>(g.rank(), Cl, 0, 0, k, k);
+
+// //         for(int i=0; i<k; i++){
+// //             for(int j=0; j<k; j++){
+// //                 if(i==j) Ul.data()[i+j*Ul.ld()] = Ud.data()[i];
+// //                 else Ul.data()[i+j*Ul.ld()] = 0.0;
+// //             }
+// //         }
+// //         int ms = timer.elapsed();
+// //         if(g.rank()==0) fmt::print("P[{},{}]: SVD takes: {}(ms)\n",  g.ranks()[0], g.ranks()[1], ms);
+// //         U.dereplicate_in_all(Ul, 0, 0, k, k);
+// //     }
+// //     // U.collect_and_print("U");
+// //     g.barrier();
+
+
+// //     DArray::DMatrix<float> Z(g, n, k);
+// //     Z.set_constant(0.0);
+// //     {
+// //         timer.start();
+// //         auto Ql=Q.replicate_in_rows(0, 0, n, qq*k);
+// //         auto Ul=U.replicate_in_columns(0, 0, qq*k, k);
+// //         auto Zl=Z.local_view(0, 0, n, k);
+// //         tc_gemm(g.rank(), Ql.dims()[0], Ul.dims()[1], Ql.dims()[1], Ql.data(), Ql.ld(), Ul.data(), Ul.ld(), Zl.data(), Zl.ld());
+// //         int ms = timer.elapsed();
+// //         if(g.rank()==0) fmt::print("P[{},{}]: Creating Low Rank Approximator Z takes: {}(ms)\n",  g.ranks()[0], g.ranks()[1], ms);
+// //     }
+// //     // Z.collect_and_print("Z");
+// //     g.barrier();
+
+// //     Knorm(g, n, d, k, X, Y, Z, gamma);
+
+
+// //     auto ZZ = Z.replicate_in_all(0, 0, n, k);
+// //     auto YY = Y.replicate_in_all(0, 0, 1, n);
+// //     auto XX = X.replicate_in_all(0, 0, d, n);
+
+// //     DArray::LMatrix<double> dZ(n, k);
+// //     DArray::LMatrix<double> dY(n, 1);
+// //     DArray::LMatrix<double> dX(d, n);
+// //     dZ.float_to_double(ZZ.data(), ZZ.ld());
+// //     dY.float_to_double(YY.data(), YY.ld());
+// //     dX.float_to_double(XX.data(), XX.ld());
+
+// //     // Initial guess of a
+// //     DArray::LMatrix<double> a(n, 1);
+// //     int plus=0, minus=0;
+// //     for(int i=0; i<n; ++i){
+// //         if(dY.data()[i] == 1) plus+=1;
+// //         else if(dY.data()[i] == -1) minus+=1;
+// //         else assert(false);
+// //     }
+
+// //     double mval=0, pval=0;
+// //     if(plus>minus){
+// //         mval=0.9*C;
+// //         pval=mval*minus/plus;
+// //     }else{
+// //         pval=0.9*C;
+// //         mval=pval*plus/minus;
+// //     }
+
+// //     for(int i=0; i<n; ++i){
+// //         if(dY.data()[i] == 1) a.data()[i] = pval;
+// //         else a.data()[i] = mval;
+// //     }
+
+// //     if(g.rank() == 0) printf("plus=%d, minus=%d, mval=%f, pval=%f\n", plus, minus, mval, pval);
+
+// //     for(int i=0; i<n; ++i){
+// //         if(a.data()[i] < 0 || a.data()[i] > C)
+// //             if(g.rank() == 0) printf("Initial guess Inequality violation! offending: i=%d, a[i]=%f \n", i, a.data()[i]);
+// //     }
+
+// //     double Yta=0.0;
+// //     for(int i=0; i<n; ++i){
+// //         Yta+=(dY.data()[i]*a.data()[i]);
+// //     }
+// //     if(g.rank() == 0) printf("Initial feasibility:: dY'*a=%f\n", Yta);
+
+// //     // Starting Barrier Method
+// //     double t=1, alpha=0.1, beta=0.5;
+// //     int mu=20, bi=1, one=1;
+// //     int rk=g.rank();
+// //     DArray::LMatrix<double> b(n,1);
+
+// //     // start barrier outer iteration
+// //     while(true){
+// //         if(g.rank() == 0) printf("Barrier iteration bi=%d, suboptimality gap (n/t)=%f, n=%d, t=%f, f(a)=%f\n", bi, (n/t), n, t, f(rk, n, k, a, dZ));
+// //         int ni=1;
+
+// //     //     // Start Newton inner iteration
+// //     //     // while(true){
+// //     //         DArray::LMatrix<double> gradf(n,1);
+// //     //         Grad_f(n, k, dZ, a, gradf);
+// //     //         DArray::LMatrix<double> gradphi(n,1);
+// //     //         Grad_Phi(n, a, C, t, gradphi);
+// //     //         DArray::LMatrix<double> grad(n,1);
+// //     //         Grad(n, gradf, gradphi, grad);
+// //     //         DArray::LMatrix<double> D(n,1);
+// //     //         Hess_Phi(n, a, C, t, D);
+// //     //         int nn=n;
+// //     //         int imax = idamax_(&nn, D.data(), &one);
+// // 	// 	       int imin = idamin_(&nn, D.data(), &one);
+// //     //         if( D.data()[imax]/D.data()[imin] > 1e18 ) {
+// // 	// 		    printf("D is too ill-conditioned %.3e! Terminating.\n", D[imax]/D[imin]);
+// // 	// 		    break;
+// // 	// 	    }
+// //     //         auto s = conjgrad(n, k, dZ, D, b, a);
+            
+// //             ni+=1;
+// //         // }
+// //         // End Newton inner iteration
+
+
+// //         if(2*n/t < abs(f(rk, n, k, a, dZ)) * 1.0e-5){ //f(a) need to converge to 0.1% around f*
+// //             if(g.rank() == 0) printf("Barrier converged in bi::%d iterations; suboptimality gap 2n/t::%f, n=%d, t=%f \n", bi, (2*n/t), n, t);
+// //             break;
+// //         }
+// //         t=mu*t;
+// //         bi+=1;
+// //     }
+// //     // end barrier outer iteration
+
+
+// //     cuda_finalize();
+// //     MPI_Finalize();
+//     return 0;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include <mpi.h>
 #include "darray.h"
 #include "read_input.h"
-#include "lapack_like.h"
+#include "dkernel.h"
+#include "cblas_like.h"
+#include "dbarrier.h"
 
-extern void cuda_init();
-extern void cuda_finalize();
-extern void logbarrier(double* K, int ldk, int m, int n);
+// extern void cuda_init();
+// extern void cuda_finalize();
 
-void rbf(int m, int n, double *Xi, double *Xj, double *Yi, double* Yj, double *Xij, int ldxij, double *K, int ldk, double gamma){
-    for(int i=0; i<m; i++){
-        for(int j=0; j<n; j++){
-            K[i+j*ldk]=exp(-gamma*(Xi[i]-2*Xij[i+j*ldxij]+Xj[j]))*Yi[i]*Yj[j];
+// template<typename T>
+// T gaussrand(){
+//     static T v1, v2, s;
+//     static int phase = 0;
+//     T x;
+    
+//     if(phase == 0) {
+//         do {
+//             T U1 = (T)rand() / RAND_MAX;
+//             T U2 = (T)rand() / RAND_MAX;
+            
+//             v1 = 2 * U1 - 1;
+//             v2 = 2 * U2 - 1;
+//             s = v1 * v1 + v2 * v2;
+//         } while(s >= 1 || s == 0);
+        
+//         x = v1 * sqrt(-2 * log(s) / s);
+//     } else
+//         x = v2 * sqrt(-2 * log(s) / s);
+    
+//     phase = 1 - phase;
+//     return x;
+// }
+
+
+template<typename T>
+void read_from_file(const std::string filepath, DArray::LMatrix<T> A, int m, int n){
+    FILE *f = fopen(filepath.c_str(), "r");
+    assert(f);
+    
+    size_t read, len=0;
+    char *line;
+    size_t elements;
+
+    for(int i=0;i<m;++i){
+        if((read=getline(&line, &len, f))!=-1){
+            int j=0;
+            char *features = strtok (line,",");
+            while (features != NULL){
+                A.data()[i+j*A.ld()] = atof(features);
+                features = strtok (NULL, ",");
+                j+=1;
+            }
         }
     }
 }
-
-void vecnorm(double *Z, int ldz, double *Zn, int n, int d){
-    double sum=0.0;
-    for(int i=0; i<n; ++i){
-        sum=0.0;
-        for(int j=0; j<d; ++j){
-            sum+=(Z[i+j*ldz]*Z[i+j*ldz]);
-        }
-        Zn[i]=sum;
-    }
-}
-
 
 int main(int argc, char** argv){
-  MPI_Init(&argc, &argv);
-  int np, p, q;
-  MPI_Comm_size(MPI_COMM_WORLD, &np);
-  DArray::Grid::np_to_pq(np, p, q); // np = p*q
-  DArray::Grid g(MPI_COMM_WORLD, p, q);
-  g.barrier();
-  // cuda_init();
-  DArray::ElapsedTimer timer;
+    MPI_Init(&argc, &argv);
 
-  if(argc < 9){
-      if(g.rank() == 0) printf("ERROR : Too few arguments passed to run the program.\nRequired arguments :: <dataset filename(char*)> <no of records(int)> <no of featues(int)> <rank k(int)> <gamma(float)> <power refinement q(int)>\n");
-      return 0;
-  }
+    int np, p, q;
+    MPI_Comm_size(MPI_COMM_WORLD, &np);
+    DArray::Grid::np_to_pq(np, p, q);
+    DArray::Grid g(MPI_COMM_WORLD, p, q);
+    DArray::ElapsedTimer timer;
 
-  char *filename = argv[1];
-  // long long int n = atoi(argv[2]);
-  int n = atoi(argv[2]);
-  int d = atoi(argv[3]);
-  int k = atoi(argv[4]); /*no of columns of the tall matrix A, B and Omega*/
-  int bs = atoi(argv[5]); 
-  double gamma = strtod(argv[6], NULL);
-  int qq = atoi(argv[7]);
-  double C = strtod(argv[8], NULL);
+//     if(argc < 7){
+//       if(g.rank() == 0) printf("ERROR : Too few arguments passed to run the program.\nRequired arguments :: <dataset filename(char*)> <no of records(int)> <no of featues(int)> <rank k(int)> <gamma(float)> <power refinement q(int)>\n");
+//         return 0;
+//     }
 
-  if(qq < 1) qq=1;
+//     char *filename = argv[1];
+//     long n = atol(argv[2]);
+//     long d = atol(argv[3]);
+//     int k = atoi(argv[4]); /*no of columns of the tall matrix A, B and Omega*/ 
+//     float gamma = strtod(argv[5], NULL);
+//     int qq = atoi(argv[6]);
+//     double C = strtod(argv[7], NULL);
 
-  if(bs <= 0) bs = 128;
+//     float *x=(float*)malloc(sizeof(float)*d*n);
+//     float *y=(float*)malloc(sizeof(float)*n);
+//     timer.start();
+//     read_input_file<float>(filename, n, d, x, d, y);
+//     int ms = timer.elapsed();
+//     if(g.rank()==0) fmt::print("P[{},{}]: libsvm read takes: {} (ms)\n",  g.ranks()[0], g.ranks()[1], ms);
 
-  if(qq*k > n/2) {
-    if(g.rank()==0) printf(" The kernel needs to be tall and skinny\n", p, q, n, d, k);
-    return 0;
-  }
+//     DArray::DMatrix<float> X(g, d, n);
+//     DArray::DMatrix<float> Y(g, 1, n);
+//     timer.start();
+//     X.set_value_from_matrix(x, d);
+//     Y.set_value_from_matrix(y, 1);
+//     ms = timer.elapsed();
+//     if(g.rank()==0) fmt::print("P[{},{}]: training and label data distribution across {} processes takes : {} (ms)\n",  g.ranks()[0], g.ranks()[1], np, ms);
+//     g.barrier();
 
-  if(g.rank()==0) printf("#### SVM Kernel Training (Grid::%dx%d, n::%d, d::%d, k::%d) \n", p, q, n, d, k);
-  double *x=(double*)malloc(sizeof(double)*d*n);
-  double *y=(double*)malloc(sizeof(double)*n);
-  for(int i=0; i<d; i++){
-    for(int j=0; j<n; j++){
-      x[i+j*d]=0.0;
+//     // Geneterating the RBF Kernel
+//     DArray::DMatrix<float> K(g, n, n);
+//     auto Xi=X.transpose_and_replicate_in_rows(0, 0, d, n);
+//     auto Yi=Y.transpose_and_replicate_in_rows(0, 0, 1, n);
+//     auto Xj=X.replicate_in_columns(0, 0, d, n).transpose();
+//     auto Yj=Y.replicate_in_columns(0, 0, 1, n).transpose();
+//     auto Kij = K.local_view(0, 0, n, n);
+//     float alpha=1, beta=0;
+//     sgemm_("N", "T", &Kij.dims()[0], &Kij.dims()[1], &Xi.dims()[1], &alpha, Xi.data(), &Xi.ld(), Xj.data(), &Xj.ld(), &beta, Kij.data(), &Kij.dims()[0]);
+
+//     DArray::LMatrix<float> X_sqr(Xi.dims()[0], 1);
+//     for(int i=0; i<Xi.dims()[0]; ++i){
+//         float sum=0.0;
+//         for(int j=0; j<Xi.dims()[1]; ++j){
+//             sum+= (Xi.data()[i+j*Xi.ld()] * Xi.data()[i+j*Xi.ld()]);
+//         }
+//         X_sqr.data()[i]=sum;
+//     }
+
+//     for(int i=0; i<Kij.dims()[0]; ++i){
+//         for(int j=0; j<Kij.dims()[1]; ++j){
+//             Kij.data()[i+j*Kij.dims()[0]] = Yi.data()[i] * Yj.data()[j] * exp(-gamma * (X_sqr.data()[i] - 2*Kij.data()[i+j*Kij.dims()[0]] + X_sqr.data()[j]));
+//         }
+//     }
+//     if(g.rank()==0) fmt::print("P[{},{}]: Kernel Matrix created \n", g.ranks()[0], g.ranks()[1]);
+
+//     auto KK = K.collect(0);
+//     auto YY = Y.collect(0);
+//     auto XX = X.collect(0);
+
+//     if(g.rank() == 0){
+//         DArray::LMatrix<double> dK(n, n);
+//         DArray::LMatrix<double> dY(n, 1);
+//         DArray::LMatrix<double> dX(d, n);
+//         dK.float_to_double(KK.data(), KK.ld());
+//         dY.float_to_double(YY.data(), YY.ld());
+//         dX.float_to_double(XX.data(), XX.ld());
+
+//         // Initial guess of a
+//         DArray::LMatrix<double> a(n, 1);
+//         int plus=0, minus=0;
+//         for(int i=0; i<n; ++i){
+//             if(dY.data()[i] == 1) plus+=1;
+//             else if(dY.data()[i] == -1) minus+=1;
+//             else {
+//                 printf("dY[%d]=%f\n", i, dY.data()[i]);
+//                 assert(false);
+//             }
+//         }
+
+//         double mval=0, pval=0;
+//         if(plus>minus){
+//             mval=0.9*C;
+//             pval=mval*minus/plus;
+//         }else{
+//             pval=0.9*C;
+//             mval=pval*plus/minus;
+//         }
+//         for(int i=0; i<n; ++i){
+//             if(dY.data()[i] == 1.0) a.data()[i] = pval;
+//             else a.data()[i] = mval;
+//         }
+
+//         printf("plus=%d, minus=%d, mval=%f, pval=%f\n", plus, minus, mval, pval);
+
+//         for(int i=0; i<n; ++i){
+//             if(a.data()[i] < 0 || a.data()[i] > C)
+//                 printf("Initial guess Inequality violation! offending: i=%d, a.data[](0)=%f \n", i, a.data()[i]);
+//         }
+//         double Yta=0.0;
+//         for(int i=0; i<n; ++i){
+//             Yta+=(dY.data()[i]*a.data()[i]);
+//         }
+//         printf("Initial feasibility:: dY'*a=%f\n", Yta);
+        
+//         DArray::LMatrix<double> dG(n,n);
+//         dG.set_Identity();
+//         double done=1.0, dn=n;
+//         int nn=n;
+//         dgemm_("N", "N", &nn, &nn, &nn, &done, dK.data(), &dK.ld(), dK.data(), &dK.ld(), &dn, dG.data(), &dG.ld()); 
+//         // dG=dK;
+
+//         // Starting Barrier Method
+//         double t=1, alpha=0.1, beta=0.5;
+//         int mu=20, bi=1;
+//         int rk=g.rank();
+//         DArray::LMatrix<double> b(n,1);
+//         DArray::LMatrix<double> dM(n,n);
+//         dM.diag(dG);
+
+//         // start barrier outer iteration
+//         while(true){
+//             printf("Barrier iteration bi=%d, suboptimality gap (n/t)=%f, n=%d, t=%f, f(a)=%f\n", bi, (n/t), n, t, f(rk, n, a, dG));
+//             int ni=1;
+
+//             // Start Newton inner iteration
+//             while(true){
+//                 DArray::LMatrix<double> gradf(n,1);
+//                 Grad_f(n, dG, a, gradf);
+//                 DArray::LMatrix<double> gradphi(n,1);
+//                 Grad_Phi(n, a, C, t, gradphi);
+//                 DArray::LMatrix<double> grad(n,1);
+//                 Grad(n, gradf, gradphi, grad);
+//                 DArray::LMatrix<double> D(n,1);
+//                 Hess_Phi(n, a, C, t, D);
+//                 DArray::LMatrix<double> dH(n,n);
+//                 createH(n, dG, D, t, dH);
+//                 auto s = conjgrad(n, dH, dM, b, a);
+
+//                 double nd=0.0;
+//                 for(int i=0; i<n; ++i){
+//                     nd+=(-1.0*grad.data()[i]*s.data()[i]);
+//                 }
+//                 nd=sqrt(nd);
+
+//                 printf("Newton iteration ni::%d, nd::%f Decrement ::%f, g(a)::%f \n", ni, nd, (nd*nd/2), gg(rk, n, a, dG, C, t));
+
+//                 double lastg=gg(rk, n, a, dG, C, t);
+//                 int tt=1; //Newton Step Size
+            //     while(true){
+            //         DArray::LMatrix<double> gval(n, 1);
+            //         for(int i=0; i<n; ++i){
+            //             gval.data()[i]=a.data()[i]+(tt*s.data()[i]);
+            //         }
+            //         double last_val=0.0;
+            //         for(int i=0; i<n; ++i){
+            //             last_val+=(alpha*tt*grad.data()[i]*s.data()[i]);
+            //         }
+            //         if(gg(rk, n, gval, dG, C, t) <= gg(rk, n, a, dG, C, t)+last_val){
+            //             break;
+            //         }
+            //         tt=beta*tt;
+            //     }
+
+            //     printf("Newton Step size::%d \n", tt);
+            //     for(int i=0; i<n; ++i){
+            //         a.data()[i] += (tt*s.data()[i]);
+            //     }
+
+            //     if(nd*nd/2 < 1.0e-6){
+            //         printf("Newton converged in ni::%d iterations; decrement ::%f; g(a)::%f\n", ni, (nd*nd/2), gg(rk, n, a, dG, C, t));
+            //         break;
+            //     }
+
+            //     if(ni>1 && ((lastg-gg(rk, n, a, dG, C, t)) < (1.0e-9*abs(gg(rk, n, a, dG, C, t))))){
+            //         printf("Newton slow progress! Decrement ::%f; g(a)::%f; f(a)::%f \n", (nd*nd/2), gg(rk, n, a, dG, C, t), f(rk, n, a, dG));
+            //         break;
+            //     }
+
+            //     ni+=1;
+            // }
+            // // End Newton inner iteration
+
+//             if(2*n/t < abs(f(rk, n, a, dG)) * 1.0e-5){ //f(a) need to converge to 0.1% around f*
+//                 printf("Barrier converged in bi::%d iterations; suboptimality gap 2n/t::%f, n=%d, t=%f \n", bi, (2*n/t), n, t);
+//                 break;
+//             }
+//             t=mu*t;
+//             bi+=1;
+//         }
+//         // end barrier outer iteration
+//         double g=gamma;
+//         DArray::writemodel("ijcnn.model", n, d, a, C, dG, dY, dX, g, minus, plus);
+//     }
+    
+    // test code for conjugate grad, Get A and X from Matlab for comparison
+    if(g.rank() == 0){
+        int n=500;
+        int k=50;
+        double t=1;
+        DArray::LMatrix<double> A(n, n);
+        read_from_file<double>("A.csv", A, n, n);
+        DArray::LMatrix<double> x(n,1), b(n,1), D(n, 1);
+        read_from_file<double>("X.csv", x, n, 1);
+        b.set_Identity();
+
+        for(int i=0; i<n; i++){
+            double val=0.0;
+            for(int j=0; j<k; j++){
+                val+=(A.data()[i+j*A.ld()]* A.data()[i+j*A.ld()]);
+            }
+            D.data()[i]=val;
+        }
+
+        DArray::LMatrix<double> I(n, k), Z(n,k), M(n, 1);
+        I.set_constant(1.0);
+        double done=1.0, dzero=0.0;
+        dgemm_("N", "N", &n, &k, &n, &done, A.data(), &A.ld(), I.data(), &I.ld(), &dzero, Z.data(), &Z.ld());
+
+        for(int i=0; i<n; ++i){
+            double val=0.0;
+            for(int j=0; j<k; ++j){
+                val+=(Z.data()[i+j*Z.ld()]* Z.data()[i+j*Z.ld()]);
+            }
+            M.data()[i]=val;
+        }
+
+        pre_conjgrad(g.rank(), n, k, Z, M, D, b, x);
     }
-  }
-  for(int i=0; i<n; ++i){
-    y[i]=0.0;
-  }
-  
-  if(g.rank() == 0) {
-    timer.start();
-    read_input_file(g.rank(), filename, n, d, x, d, y);
-    int ms = timer.elapsed();
-    if(g.rank()==0) fmt::print("P[{},{}]: Reading input from file takes: {} (ms)\n",  g.ranks()[0], g.ranks()[1], ms);
-  }
-  MPI_Bcast(x, d*n, MPI_FLOAT, 0, MPI_COMM_WORLD);
-  MPI_Bcast(y, n, MPI_FLOAT, 0, MPI_COMM_WORLD);
-  g.barrier();
 
-  DArray::DMatrix<double> X(g, d, n);
-  DArray::DMatrix<double> Y(g, 1, n);
-  X.set_value_from_matrix(x, d);
-  Y.set_value_from_matrix(y, 1);
-  free(x);
-  free(y);
-  g.barrier();
-
-  
-  DArray::DMatrix<double> K(g, n, n);
-  {
-    auto Xi=X.transpose_and_replicate_in_rows(0, 0, d, n);
-    auto Yi=Y.transpose_and_replicate_in_rows(0, 0, 1, n);
-    auto Xj=X.replicate_in_columns(0, 0, d, n).transpose();
-    auto Yj=Y.replicate_in_columns(0, 0, 1, n).transpose();
-    DArray::LMatrix<double> Xij(n, n);
-    double alpha=1.0, beta=0.0;
-    dgemm_("N", "T", &Xi.dims()[0], &Xj.dims()[0], &Xi.dims()[1], &alpha, Xi.data(), &Xi.ld(), Xj.data(), &Xj.ld(), &beta, Xij.data(), &Xij.ld());
-    DArray::LMatrix<double> Xisqr(n,1), Xjsqr(n,1);
-    vecnorm(Xi.data(), Xi.ld(), Xisqr.data(), n, d);
-    vecnorm(Xj.data(), Xj.ld(), Xjsqr.data(), n, d);
-    auto Ki = K.replicate_in_all(0, 0, n, n);
-    rbf(n, n, Xisqr.data(), Xjsqr.data(), Yi.data(), Yj.data(), Xij.data(), Xij.ld(), Ki.data(), Ki.ld(), gamma);
-    K.dereplicate_in_all(Ki, 0, 0, n, n);
-  }
-
-  auto Kl=K.collect(0);
-  if(g.rank() == 0){
-    logbarrier(Kl.data(), Kl.ld(), n, n);
-  } 
-  
-
-
-  MPI_Finalize();
- }
+    MPI_Finalize();
+    return 0;
+}

@@ -1,0 +1,31 @@
+
+The following have been reloaded with a version change:
+  1) cmake/3.21.3 => cmake/3.17.3
+
+*********************************
+*********************************
+COVTYPE n=580864 d=54 k=32 q=1
+P[0,0]: libsvm read takes: 1891 (ms)
+P[0,0]: training and label data distribution across 4 processes takes : 372 (ms)
+in 12 chunks. Progress: 144 
+
+===================================================================================
+=   BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES
+=   RANK 2 PID 124910 RUNNING AT compute-3-3
+=   KILLED BY SIGNAL: 9 (Killed)
+===================================================================================
+
+===================================================================================
+=   BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES
+=   RANK 3 PID 124911 RUNNING AT compute-3-3
+=   KILLED BY SIGNAL: 9 (Killed)
+===================================================================================
+slurmstepd: error: Detected 1 oom-kill event(s) in StepId=598101.0. Some of your processes may have been killed by the cgroup out-of-memory handler.
+srun: error: compute-3-3: task 1: Out Of Memory
+slurmstepd: error: Detected 1 oom-kill event(s) in StepId=598101.0. Some of your processes may have been killed by the cgroup out-of-memory handler.
+I_MPI_JOB_TIMEOUT = -1 second(s): job ending due to startup timeout
+
+real	16m47.872s
+user	0m0.015s
+sys	0m0.037s
+slurmstepd: error: Detected 1 oom-kill event(s) in StepId=598101.batch. Some of your processes may have been killed by the cgroup out-of-memory handler.

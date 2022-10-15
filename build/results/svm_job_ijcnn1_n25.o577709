@@ -1,0 +1,57 @@
+=================================================================================================
+IJCNN1 n=49990 d=22 k=256 qq=3
+=================================================================================================
+
+*********************************
+*********************************
+ijcnn1 n=49990 d=22 k=256 qq=1 (N 1 np 25)
+#### SVM Kernel Training (Grid::5x5, n::49990, d::22, k::256) 
+P[0,0]: Reading input from file takes: 247 (ms)
+P[0,0]: LRA (low-rank approximation of kernel) - K(49990,49990) ~ G(49990,256): 9589(ms)
+P[0,0]: Creating a Krylov subspace... (49990, 256): 3(ms)
+P[0,0]: QR takes: 177 (ms)
+P[0,0]: K*Q takes: 8563(ms)
+P[0,0]: C=QT*KQ takes: 89(ms)
+P[0,0]: SVD takes: 43(ms)
+P[0,0]: Creating Low Rank Approximator Z takes: 31(ms)
+fnKAtA::9098426000, fnK::87493870, fnorm(K-AtA)/fnorm(K)=103.989296
+
+real	0m26.215s
+user	0m0.016s
+sys	0m0.036s
+
+*********************************
+*********************************
+ijcnn1 n=49990 d=22 k=256 qq=2 (N 1 np 25)
+#### SVM Kernel Training (Grid::5x5, n::49990, d::22, k::256) 
+P[0,0]: Reading input from file takes: 178 (ms)
+P[0,0]: LRA (low-rank approximation of kernel) - K(49990,49990) ~ G(49990,256): 9732(ms)
+P[0,0]: Creating a Krylov subspace... (49990, 512): 8616(ms)
+P[0,0]: QR takes: 473 (ms)
+P[0,0]: K*Q takes: 9146(ms)
+P[0,0]: C=QT*KQ takes: 169(ms)
+P[0,0]: SVD takes: 140(ms)
+P[0,0]: Creating Low Rank Approximator Z takes: 66(ms)
+fnKAtA::2267848700, fnK::23302262, fnorm(K-AtA)/fnorm(K)=97.32311
+
+real	0m35.926s
+user	0m0.014s
+sys	0m0.038s
+
+*********************************
+*********************************
+ijcnn1 n=49990 d=22 k=256 qq=3 (N 1 np 25)
+#### SVM Kernel Training (Grid::5x5, n::49990, d::22, k::256) 
+P[0,0]: Reading input from file takes: 178 (ms)
+P[0,0]: LRA (low-rank approximation of kernel) - K(49990,49990) ~ G(49990,256): 9562(ms)
+P[0,0]: Creating a Krylov subspace... (49990, 768): 17062(ms)
+P[0,0]: QR takes: 987 (ms)
+P[0,0]: K*Q takes: 9710(ms)
+P[0,0]: C=QT*KQ takes: 253(ms)
+P[0,0]: SVD takes: 304(ms)
+P[0,0]: Creating Low Rank Approximator Z takes: 92(ms)
+fnKAtA::1977631100, fnK::22037460, fnorm(K-AtA)/fnorm(K)=89.73952
+
+real	0m45.526s
+user	0m0.019s
+sys	0m0.033s

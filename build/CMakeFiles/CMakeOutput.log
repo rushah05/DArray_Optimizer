@@ -1,0 +1,302 @@
+The system is: Linux - 4.18.0-372.9.1.el8.x86_64 - x86_64
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++ 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is GNU, found in "/home/rkshah2/DArray/build/CMakeFiles/3.21.3/CompilerIdCXX/a.out"
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /home/rkshah2/DArray/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_4dc55/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_4dc55.dir/build.make CMakeFiles/cmTC_4dc55.dir/build
+gmake[1]: Entering directory '/home/rkshah2/DArray/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o
+/project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++   -v -o CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o -c /opt/ohpc/pub/utils/cmake/3.21.3/share/cmake-3.21/Modules/CMakeCXXCompilerABI.cpp
+Using built-in specs.
+COLLECT_GCC=/project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++
+OFFLOAD_TARGET_NAMES=nvptx-none
+Target: x86_64-pc-linux-gnu
+Configured with: ../configure --enable-languages=c,c++,fortran --without-cuda-driver --enable-offload-targets=nvptx-none --enable-lto --enable-checking=release --disable-multilib --enable-shared=yes --enable-static=yes --enable-threads=posix --enable-plugins --enable-gold=default --enable-ld --with-plugin-ld=ld.gold --prefix=/project/dsi/apps/easybuild/software/GCCcore/11.2.0 --with-local-prefix=/project/dsi/apps/easybuild/software/GCCcore/11.2.0 --enable-bootstrap --with-isl=/project/dsi/apps/easybuild/build/GCCcore/11.2.0/system-system/gcc-11.2.0/stage2_stuff --build=x86_64-pc-linux-gnu --host=x86_64-pc-linux-gnu
+Thread model: posix
+Supported LTO compression algorithms: zlib
+gcc version 11.2.0 (GCC) 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_4dc55.dir/'
+ /project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/cc1plus -quiet -v -D_GNU_SOURCE /opt/ohpc/pub/utils/cmake/3.21.3/share/cmake-3.21/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_4dc55.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -o /tmp/cc0qOQZC.s
+GNU C++17 (GCC) version 11.2.0 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 11.2.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.24-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring nonexistent directory "/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include-fixed"
+ignoring nonexistent directory "/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../x86_64-pc-linux-gnu/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /share/apps/intel-2020u2/daal/include
+ /share/apps/intel-2020u2/pstl/include
+ /share/apps/intel-2020u2/mkl/include
+ /share/apps/intel-2020u2/tbb/include
+ /project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/include
+ /project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/include
+ /share/apps/intel-2020u2/clck/2019.9/include
+ /project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0
+ /project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0/x86_64-pc-linux-gnu
+ /project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0/backward
+ /project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include
+ /project/dsi/apps/easybuild/software/GCCcore/11.2.0/include
+ /usr/include
+End of search list.
+GNU C++17 (GCC) version 11.2.0 (x86_64-pc-linux-gnu)
+	compiled by GNU C version 11.2.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.24-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 1499a664e415121db9dc7be21c897c7f
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_4dc55.dir/'
+ as -v --64 -o CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o /tmp/cc0qOQZC.s
+GNU assembler version 2.37 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.37
+COMPILER_PATH=/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/
+LIBRARY_PATH=/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib/../lib64/:/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib/../lib64/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/intel-2020u2/lib/intel64/:/share/apps/intel-2020u2/daal/lib/intel64/:/share/apps/intel-2020u2/ipp/lib/intel64/:/share/apps/intel-2020u2/mkl/lib/intel64/:/share/apps/intel-2020u2/tbb/lib/intel64/gcc4.8/:/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib/:/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.'
+Linking CXX executable cmTC_4dc55
+/opt/ohpc/pub/utils/cmake/3.21.3/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4dc55.dir/link.txt --verbose=1
+/project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++ -L/usr/lib64/nvidia -L/usr/lib/nvidia -L/share/apps/cuda-11.6/lib64 -L/share/apps/cuda-11.6/lib -v CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_4dc55 
+Using built-in specs.
+COLLECT_GCC=/project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++
+COLLECT_LTO_WRAPPER=/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/lto-wrapper
+OFFLOAD_TARGET_NAMES=nvptx-none
+Target: x86_64-pc-linux-gnu
+Configured with: ../configure --enable-languages=c,c++,fortran --without-cuda-driver --enable-offload-targets=nvptx-none --enable-lto --enable-checking=release --disable-multilib --enable-shared=yes --enable-static=yes --enable-threads=posix --enable-plugins --enable-gold=default --enable-ld --with-plugin-ld=ld.gold --prefix=/project/dsi/apps/easybuild/software/GCCcore/11.2.0 --with-local-prefix=/project/dsi/apps/easybuild/software/GCCcore/11.2.0 --enable-bootstrap --with-isl=/project/dsi/apps/easybuild/build/GCCcore/11.2.0/system-system/gcc-11.2.0/stage2_stuff --build=x86_64-pc-linux-gnu --host=x86_64-pc-linux-gnu
+Thread model: posix
+Supported LTO compression algorithms: zlib
+gcc version 11.2.0 (GCC) 
+COMPILER_PATH=/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/
+LIBRARY_PATH=/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib/../lib64/:/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib/../lib64/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/intel-2020u2/lib/intel64/:/share/apps/intel-2020u2/daal/lib/intel64/:/share/apps/intel-2020u2/ipp/lib/intel64/:/share/apps/intel-2020u2/mkl/lib/intel64/:/share/apps/intel-2020u2/tbb/lib/intel64/gcc4.8/:/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib/:/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-L/usr/lib64/nvidia' '-L/usr/lib/nvidia' '-L/share/apps/cuda-11.6/lib64' '-L/share/apps/cuda-11.6/lib' '-v' '-o' 'cmTC_4dc55' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_4dc55.'
+ /project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/collect2 -plugin /project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/liblto_plugin.so -plugin-opt=/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccc4MRdH.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_4dc55 /lib/../lib64/crt1.o /lib/../lib64/crti.o /project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/crtbegin.o -L/usr/lib64/nvidia -L/usr/lib/nvidia -L/share/apps/cuda-11.6/lib64 -L/share/apps/cuda-11.6/lib -L/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib/../lib64 -L/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib/../lib64 -L/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0 -L/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/share/apps/intel-2020u2/lib/intel64 -L/share/apps/intel-2020u2/daal/lib/intel64 -L/share/apps/intel-2020u2/ipp/lib/intel64 -L/share/apps/intel-2020u2/mkl/lib/intel64 -L/share/apps/intel-2020u2/tbb/lib/intel64/gcc4.8 -L/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib -L/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib -L/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../.. CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/crtend.o /lib/../lib64/crtn.o
+COLLECT_GCC_OPTIONS='-L/usr/lib64/nvidia' '-L/usr/lib/nvidia' '-L/share/apps/cuda-11.6/lib64' '-L/share/apps/cuda-11.6/lib' '-v' '-o' 'cmTC_4dc55' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_4dc55.'
+gmake[1]: Leaving directory '/home/rkshah2/DArray/build/CMakeFiles/CMakeTmp'
+
+
+
+Parsed CXX implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/share/apps/intel-2020u2/daal/include]
+    add: [/share/apps/intel-2020u2/pstl/include]
+    add: [/share/apps/intel-2020u2/mkl/include]
+    add: [/share/apps/intel-2020u2/tbb/include]
+    add: [/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/include]
+    add: [/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/include]
+    add: [/share/apps/intel-2020u2/clck/2019.9/include]
+    add: [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0]
+    add: [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0/x86_64-pc-linux-gnu]
+    add: [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0/backward]
+    add: [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include]
+    add: [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/include]
+    add: [/usr/include]
+  end of search list found
+  collapse include dir [/share/apps/intel-2020u2/daal/include] ==> [/share/apps/intel-2020u2/daal/include]
+  collapse include dir [/share/apps/intel-2020u2/pstl/include] ==> [/share/apps/intel-2020u2/pstl/include]
+  collapse include dir [/share/apps/intel-2020u2/mkl/include] ==> [/share/apps/intel-2020u2/mkl/include]
+  collapse include dir [/share/apps/intel-2020u2/tbb/include] ==> [/share/apps/intel-2020u2/tbb/include]
+  collapse include dir [/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/include] ==> [/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/include]
+  collapse include dir [/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/include] ==> [/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/include]
+  collapse include dir [/share/apps/intel-2020u2/clck/2019.9/include] ==> [/share/apps/intel-2020u2/clck/2019.9/include]
+  collapse include dir [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0] ==> [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/include/c++/11.2.0]
+  collapse include dir [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0/x86_64-pc-linux-gnu] ==> [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/include/c++/11.2.0/x86_64-pc-linux-gnu]
+  collapse include dir [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0/backward] ==> [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/include/c++/11.2.0/backward]
+  collapse include dir [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include] ==> [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include]
+  collapse include dir [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/include] ==> [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/include]
+  collapse include dir [/usr/include] ==> [/usr/include]
+  implicit include dirs: [/share/apps/intel-2020u2/daal/include;/share/apps/intel-2020u2/pstl/include;/share/apps/intel-2020u2/mkl/include;/share/apps/intel-2020u2/tbb/include;/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/include;/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/include;/share/apps/intel-2020u2/clck/2019.9/include;/project/dsi/apps/easybuild/software/GCCcore/11.2.0/include/c++/11.2.0;/project/dsi/apps/easybuild/software/GCCcore/11.2.0/include/c++/11.2.0/x86_64-pc-linux-gnu;/project/dsi/apps/easybuild/software/GCCcore/11.2.0/include/c++/11.2.0/backward;/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include;/project/dsi/apps/easybuild/software/GCCcore/11.2.0/include;/usr/include]
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/rkshah2/DArray/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_4dc55/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_4dc55.dir/build.make CMakeFiles/cmTC_4dc55.dir/build]
+  ignore line: [gmake[1]: Entering directory '/home/rkshah2/DArray/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++   -v -o CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o -c /opt/ohpc/pub/utils/cmake/3.21.3/share/cmake-3.21/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++]
+  ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none]
+  ignore line: [Target: x86_64-pc-linux-gnu]
+  ignore line: [Configured with: ../configure --enable-languages=c,c++,fortran --without-cuda-driver --enable-offload-targets=nvptx-none --enable-lto --enable-checking=release --disable-multilib --enable-shared=yes --enable-static=yes --enable-threads=posix --enable-plugins --enable-gold=default --enable-ld --with-plugin-ld=ld.gold --prefix=/project/dsi/apps/easybuild/software/GCCcore/11.2.0 --with-local-prefix=/project/dsi/apps/easybuild/software/GCCcore/11.2.0 --enable-bootstrap --with-isl=/project/dsi/apps/easybuild/build/GCCcore/11.2.0/system-system/gcc-11.2.0/stage2_stuff --build=x86_64-pc-linux-gnu --host=x86_64-pc-linux-gnu]
+  ignore line: [Thread model: posix]
+  ignore line: [Supported LTO compression algorithms: zlib]
+  ignore line: [gcc version 11.2.0 (GCC) ]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_4dc55.dir/']
+  ignore line: [ /project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/cc1plus -quiet -v -D_GNU_SOURCE /opt/ohpc/pub/utils/cmake/3.21.3/share/cmake-3.21/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_4dc55.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -o /tmp/cc0qOQZC.s]
+  ignore line: [GNU C++17 (GCC) version 11.2.0 (x86_64-pc-linux-gnu)]
+  ignore line: [	compiled by GNU C version 11.2.0  GMP version 6.2.1  MPFR version 4.1.0  MPC version 1.2.1  isl version isl-0.24-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [ignoring nonexistent directory "/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include-fixed"]
+  ignore line: [ignoring nonexistent directory "/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../x86_64-pc-linux-gnu/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /share/apps/intel-2020u2/daal/include]
+  ignore line: [ /share/apps/intel-2020u2/pstl/include]
+  ignore line: [ /share/apps/intel-2020u2/mkl/include]
+  ignore line: [ /share/apps/intel-2020u2/tbb/include]
+  ignore line: [ /project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/include]
+  ignore line: [ /project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/include]
+  ignore line: [ /share/apps/intel-2020u2/clck/2019.9/include]
+  ignore line: [ /project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0]
+  ignore line: [ /project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0/x86_64-pc-linux-gnu]
+  ignore line: [ /project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../include/c++/11.2.0/backward]
+  ignore line: [ /project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include]
+  ignore line: [ /project/dsi/apps/easybuild/software/GCCcore/11.2.0/include]
+  ignore line: [ /usr/include]
+  ignore line: [End of search list.]
+  ignore line: [GNU C++17 (GCC) version 11.2.0 (x86_64-pc-linux-gnu)]
+  ignore line: [	compiled by GNU C version 11.2.0  GMP version 6.2.1  MPFR version 4.1.0  MPC version 1.2.1  isl version isl-0.24-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [Compiler executable checksum: 1499a664e415121db9dc7be21c897c7f]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_4dc55.dir/']
+  ignore line: [ as -v --64 -o CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o /tmp/cc0qOQZC.s]
+  ignore line: [GNU assembler version 2.37 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.37]
+  ignore line: [COMPILER_PATH=/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib/../lib64/:/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib/../lib64/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/intel-2020u2/lib/intel64/:/share/apps/intel-2020u2/daal/lib/intel64/:/share/apps/intel-2020u2/ipp/lib/intel64/:/share/apps/intel-2020u2/mkl/lib/intel64/:/share/apps/intel-2020u2/tbb/lib/intel64/gcc4.8/:/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib/:/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.']
+  ignore line: [Linking CXX executable cmTC_4dc55]
+  ignore line: [/opt/ohpc/pub/utils/cmake/3.21.3/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4dc55.dir/link.txt --verbose=1]
+  ignore line: [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++ -L/usr/lib64/nvidia -L/usr/lib/nvidia -L/share/apps/cuda-11.6/lib64 -L/share/apps/cuda-11.6/lib -v CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_4dc55 ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++]
+  ignore line: [COLLECT_LTO_WRAPPER=/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/lto-wrapper]
+  ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none]
+  ignore line: [Target: x86_64-pc-linux-gnu]
+  ignore line: [Configured with: ../configure --enable-languages=c,c++,fortran --without-cuda-driver --enable-offload-targets=nvptx-none --enable-lto --enable-checking=release --disable-multilib --enable-shared=yes --enable-static=yes --enable-threads=posix --enable-plugins --enable-gold=default --enable-ld --with-plugin-ld=ld.gold --prefix=/project/dsi/apps/easybuild/software/GCCcore/11.2.0 --with-local-prefix=/project/dsi/apps/easybuild/software/GCCcore/11.2.0 --enable-bootstrap --with-isl=/project/dsi/apps/easybuild/build/GCCcore/11.2.0/system-system/gcc-11.2.0/stage2_stuff --build=x86_64-pc-linux-gnu --host=x86_64-pc-linux-gnu]
+  ignore line: [Thread model: posix]
+  ignore line: [Supported LTO compression algorithms: zlib]
+  ignore line: [gcc version 11.2.0 (GCC) ]
+  ignore line: [COMPILER_PATH=/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib/../lib64/:/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib/../lib64/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/share/apps/intel-2020u2/lib/intel64/:/share/apps/intel-2020u2/daal/lib/intel64/:/share/apps/intel-2020u2/ipp/lib/intel64/:/share/apps/intel-2020u2/mkl/lib/intel64/:/share/apps/intel-2020u2/tbb/lib/intel64/gcc4.8/:/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib/:/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib/:/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-L/usr/lib64/nvidia' '-L/usr/lib/nvidia' '-L/share/apps/cuda-11.6/lib64' '-L/share/apps/cuda-11.6/lib' '-v' '-o' 'cmTC_4dc55' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_4dc55.']
+  link line: [ /project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/collect2 -plugin /project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/liblto_plugin.so -plugin-opt=/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccc4MRdH.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_4dc55 /lib/../lib64/crt1.o /lib/../lib64/crti.o /project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/crtbegin.o -L/usr/lib64/nvidia -L/usr/lib/nvidia -L/share/apps/cuda-11.6/lib64 -L/share/apps/cuda-11.6/lib -L/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib/../lib64 -L/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib/../lib64 -L/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0 -L/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/share/apps/intel-2020u2/lib/intel64 -L/share/apps/intel-2020u2/daal/lib/intel64 -L/share/apps/intel-2020u2/ipp/lib/intel64 -L/share/apps/intel-2020u2/mkl/lib/intel64 -L/share/apps/intel-2020u2/tbb/lib/intel64/gcc4.8 -L/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib -L/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib -L/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../.. CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/crtend.o /lib/../lib64/crtn.o]
+    arg [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/project/dsi/apps/easybuild/software/GCCcore/11.2.0/libexec/gcc/x86_64-pc-linux-gnu/11.2.0/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccc4MRdH.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_4dc55] ==> ignore
+    arg [/lib/../lib64/crt1.o] ==> obj [/lib/../lib64/crt1.o]
+    arg [/lib/../lib64/crti.o] ==> obj [/lib/../lib64/crti.o]
+    arg [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/crtbegin.o] ==> obj [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/crtbegin.o]
+    arg [-L/usr/lib64/nvidia] ==> dir [/usr/lib64/nvidia]
+    arg [-L/usr/lib/nvidia] ==> dir [/usr/lib/nvidia]
+    arg [-L/share/apps/cuda-11.6/lib64] ==> dir [/share/apps/cuda-11.6/lib64]
+    arg [-L/share/apps/cuda-11.6/lib] ==> dir [/share/apps/cuda-11.6/lib]
+    arg [-L/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib/../lib64] ==> dir [/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib/../lib64]
+    arg [-L/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib/../lib64] ==> dir [/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib/../lib64]
+    arg [-L/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0] ==> dir [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0]
+    arg [-L/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib64] ==> dir [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib64]
+    arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+    arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+    arg [-L/share/apps/intel-2020u2/lib/intel64] ==> dir [/share/apps/intel-2020u2/lib/intel64]
+    arg [-L/share/apps/intel-2020u2/daal/lib/intel64] ==> dir [/share/apps/intel-2020u2/daal/lib/intel64]
+    arg [-L/share/apps/intel-2020u2/ipp/lib/intel64] ==> dir [/share/apps/intel-2020u2/ipp/lib/intel64]
+    arg [-L/share/apps/intel-2020u2/mkl/lib/intel64] ==> dir [/share/apps/intel-2020u2/mkl/lib/intel64]
+    arg [-L/share/apps/intel-2020u2/tbb/lib/intel64/gcc4.8] ==> dir [/share/apps/intel-2020u2/tbb/lib/intel64/gcc4.8]
+    arg [-L/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib] ==> dir [/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib]
+    arg [-L/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib] ==> dir [/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib]
+    arg [-L/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../..] ==> dir [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../..]
+    arg [CMakeFiles/cmTC_4dc55.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/crtend.o] ==> obj [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/crtend.o]
+    arg [/lib/../lib64/crtn.o] ==> obj [/lib/../lib64/crtn.o]
+  collapse obj [/lib/../lib64/crt1.o] ==> [/lib64/crt1.o]
+  collapse obj [/lib/../lib64/crti.o] ==> [/lib64/crti.o]
+  collapse obj [/lib/../lib64/crtn.o] ==> [/lib64/crtn.o]
+  collapse library dir [/usr/lib64/nvidia] ==> [/usr/lib64/nvidia]
+  collapse library dir [/usr/lib/nvidia] ==> [/usr/lib/nvidia]
+  collapse library dir [/share/apps/cuda-11.6/lib64] ==> [/share/apps/cuda-11.6/lib64]
+  collapse library dir [/share/apps/cuda-11.6/lib] ==> [/share/apps/cuda-11.6/lib]
+  collapse library dir [/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib/../lib64] ==> [/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib64]
+  collapse library dir [/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib/../lib64] ==> [/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib64]
+  collapse library dir [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0] ==> [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0]
+  collapse library dir [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib64] ==> [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib64]
+  collapse library dir [/lib/../lib64] ==> [/lib64]
+  collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+  collapse library dir [/share/apps/intel-2020u2/lib/intel64] ==> [/share/apps/intel-2020u2/lib/intel64]
+  collapse library dir [/share/apps/intel-2020u2/daal/lib/intel64] ==> [/share/apps/intel-2020u2/daal/lib/intel64]
+  collapse library dir [/share/apps/intel-2020u2/ipp/lib/intel64] ==> [/share/apps/intel-2020u2/ipp/lib/intel64]
+  collapse library dir [/share/apps/intel-2020u2/mkl/lib/intel64] ==> [/share/apps/intel-2020u2/mkl/lib/intel64]
+  collapse library dir [/share/apps/intel-2020u2/tbb/lib/intel64/gcc4.8] ==> [/share/apps/intel-2020u2/tbb/lib/intel64/gcc4.8]
+  collapse library dir [/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib] ==> [/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib]
+  collapse library dir [/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib] ==> [/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib]
+  collapse library dir [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../..] ==> [/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib]
+  implicit libs: [stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+  implicit objs: [/lib64/crt1.o;/lib64/crti.o;/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/crtbegin.o;/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0/crtend.o;/lib64/crtn.o]
+  implicit dirs: [/usr/lib64/nvidia;/usr/lib/nvidia;/share/apps/cuda-11.6/lib64;/share/apps/cuda-11.6/lib;/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib64;/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib64;/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib/gcc/x86_64-pc-linux-gnu/11.2.0;/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib64;/lib64;/usr/lib64;/share/apps/intel-2020u2/lib/intel64;/share/apps/intel-2020u2/daal/lib/intel64;/share/apps/intel-2020u2/ipp/lib/intel64;/share/apps/intel-2020u2/mkl/lib/intel64;/share/apps/intel-2020u2/tbb/lib/intel64/gcc4.8;/project/dsi/apps/easybuild/software/binutils/2.37-GCCcore-11.2.0/lib;/project/dsi/apps/easybuild/software/zlib/1.2.11-GCCcore-11.2.0/lib;/project/dsi/apps/easybuild/software/GCCcore/11.2.0/lib]
+  implicit fwks: []
+
+
+Determining if the include file pthread.h exists passed with the following output:
+Change Dir: /home/rkshah2/DArray/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_bf5bd/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_bf5bd.dir/build.make CMakeFiles/cmTC_bf5bd.dir/build
+gmake[1]: Entering directory '/home/rkshah2/DArray/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_bf5bd.dir/CheckIncludeFile.cxx.o
+/project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++   -std=gnu++17 -o CMakeFiles/cmTC_bf5bd.dir/CheckIncludeFile.cxx.o -c /home/rkshah2/DArray/build/CMakeFiles/CMakeTmp/CheckIncludeFile.cxx
+Linking CXX executable cmTC_bf5bd
+/opt/ohpc/pub/utils/cmake/3.21.3/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bf5bd.dir/link.txt --verbose=1
+/project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++ -L/usr/lib64/nvidia -L/usr/lib/nvidia -L/share/apps/cuda-11.6/lib64 -L/share/apps/cuda-11.6/lib  CMakeFiles/cmTC_bf5bd.dir/CheckIncludeFile.cxx.o -o cmTC_bf5bd 
+gmake[1]: Leaving directory '/home/rkshah2/DArray/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function pthread_create exists in the pthread passed with the following output:
+Change Dir: /home/rkshah2/DArray/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_f5ab7/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_f5ab7.dir/build.make CMakeFiles/cmTC_f5ab7.dir/build
+gmake[1]: Entering directory '/home/rkshah2/DArray/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_f5ab7.dir/CheckFunctionExists.cxx.o
+/project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++   -DCHECK_FUNCTION_EXISTS=pthread_create -std=gnu++17 -o CMakeFiles/cmTC_f5ab7.dir/CheckFunctionExists.cxx.o -c /home/rkshah2/DArray/build/CMakeFiles/CheckLibraryExists/CheckFunctionExists.cxx
+Linking CXX executable cmTC_f5ab7
+/opt/ohpc/pub/utils/cmake/3.21.3/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f5ab7.dir/link.txt --verbose=1
+/project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++  -DCHECK_FUNCTION_EXISTS=pthread_create -L/usr/lib64/nvidia -L/usr/lib/nvidia -L/share/apps/cuda-11.6/lib64 -L/share/apps/cuda-11.6/lib  CMakeFiles/cmTC_f5ab7.dir/CheckFunctionExists.cxx.o -o cmTC_f5ab7  -lpthread 
+gmake[1]: Leaving directory '/home/rkshah2/DArray/build/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function sgemm_ exists passed with the following output:
+Change Dir: /home/rkshah2/DArray/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_6e37b/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_6e37b.dir/build.make CMakeFiles/cmTC_6e37b.dir/build
+gmake[1]: Entering directory '/home/rkshah2/DArray/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_6e37b.dir/CheckFunctionExists.cxx.o
+/project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++   -DCHECK_FUNCTION_EXISTS=sgemm_ -std=gnu++17 -o CMakeFiles/cmTC_6e37b.dir/CheckFunctionExists.cxx.o -c /home/rkshah2/DArray/build/CMakeFiles/CheckFunctionExists/CheckFunctionExists.cxx
+Linking CXX executable cmTC_6e37b
+/opt/ohpc/pub/utils/cmake/3.21.3/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6e37b.dir/link.txt --verbose=1
+/project/dsi/apps/easybuild/software/GCCcore/11.2.0/bin/c++  -DCHECK_FUNCTION_EXISTS=sgemm_ -L/usr/lib64/nvidia -L/usr/lib/nvidia -L/share/apps/cuda-11.6/lib64 -L/share/apps/cuda-11.6/lib  CMakeFiles/cmTC_6e37b.dir/CheckFunctionExists.cxx.o -o cmTC_6e37b  /share/apps/intel-2020u2/mkl/lib/intel64_lin/libmkl_intel_lp64.so /share/apps/intel-2020u2/mkl/lib/intel64_lin/libmkl_intel_thread.so /share/apps/intel-2020u2/mkl/lib/intel64_lin/libmkl_core.so /share/apps/intel-2020u2/lib/intel64_lin/libiomp5.so -lpthread -lm -ldl 
+gmake[1]: Leaving directory '/home/rkshah2/DArray/build/CMakeFiles/CMakeTmp'
+
+
+

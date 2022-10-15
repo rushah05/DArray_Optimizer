@@ -1,0 +1,16 @@
+
+The following have been reloaded with a version change:
+  1) cmake/3.21.3 => cmake/3.17.3
+
+*********************************
+*********************************
+#### test grid pxq 3x3 #### 
+#### Starting GEMM n=5000000, k=50, bs=80000  #### 
+P[0,0]: global to local index takes : 0 (ms)
+P[0,0]: Allgatherv in replicate_in_rows takes : 3706 (ms)
+P[0,0]: scatter in replicate_in_rows takes : 17425 (ms)
+in 63 chunks. Progress: 3969 
+
+real	1m15.678s
+user	0m0.010s
+sys	0m0.027s

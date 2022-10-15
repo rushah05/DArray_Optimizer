@@ -1,0 +1,227 @@
+
+The following have been reloaded with a version change:
+  1) cmake/3.21.3 => cmake/3.17.3
+
+*********************************
+*********************************
+ijcnn1 n=49990 d=22 k=200 qq=1 (N 1 np 4)
+P[0,0]: libsvm read takes: 203 (ms)
+P[0,0]: training and label data distribution across 4 processes takes : 7 (ms)
+in 1 chunks. Progress: 1 
+P[0,0]: lra takes : 39180 (ms)
+P[0,0]: QR takes: 639 (ms)
+in 1 chunks. Progress: 1 
+P[0,0]: K*Q takes: 39537(ms)
+P[0,0]: C=QT*KQ takes: 175(ms)
+P[0,0]: SVD takes: 72(ms)
+P[0,0]: Creating Low Rank Approximator Z takes: 100(ms)
+fnorm(K)=44496.934929 fnorm(K-U*U)=5993.014220 Residual fnorm=0.134684
+plus=4853, minus=45137, mval=9.676540, pval=90.000000
+Initial feasibility:: dY'*a=-0.000000
+Barrier iteration bi=1, suboptimality gap (n/t)=49990.000000, n=49990, t=1.000000, f(a)=-779524.710645
+norm(r)=329842142.433903 
+0, norm(r)::20877372.625004 
+1, norm(r)::1718844.235674 
+2, norm(r)::262037.148139 
+3, norm(r)::124338.556545 
+4, norm(r)::31373.829462 
+5, norm(r)::10311.854531 
+6, norm(r)::2424.924161 
+7, norm(r)::439.247192 
+8, norm(r)::122.928837 
+9, norm(r)::30.119925 
+10, norm(r)::13.067796 
+11, norm(r)::4.168026 
+12, norm(r)::0.935876 
+13, norm(r)::0.145390 
+14, norm(r)::0.043551 
+15, norm(r)::0.009757 
+Newton iteration ni::1, nd::-nan Decrement ::-nan, g(a)::-1118254.221851 
+Newton Step size::0.000000 
+norm(r)=329842142.433903 
+0, norm(r)::20877372.625004 
+1, norm(r)::1718844.235674 
+2, norm(r)::262037.148139 
+3, norm(r)::124338.556545 
+4, norm(r)::31373.829462 
+5, norm(r)::10311.854531 
+6, norm(r)::2424.924161 
+7, norm(r)::439.247192 
+8, norm(r)::122.928837 
+9, norm(r)::30.119925 
+10, norm(r)::13.067796 
+11, norm(r)::4.168026 
+12, norm(r)::0.935876 
+13, norm(r)::0.145390 
+14, norm(r)::0.043551 
+15, norm(r)::0.009757 
+Newton iteration ni::2, nd::-nan Decrement ::-nan, g(a)::-1118254.221851 
+Newton Step size::0.000000 
+Newton slow progress! Decrement ::-nan; g(a)::-1118254.221851; f(a)::-779524.710645 
+Barrier iteration bi=2, suboptimality gap (n/t)=2499.500000, n=49990, t=20.000000, f(a)=-779524.710645
+norm(r)=329842078.564324 
+0, norm(r)::20877368.617234 
+1, norm(r)::1718843.911431 
+2, norm(r)::262037.099714 
+3, norm(r)::124338.534384 
+4, norm(r)::31373.824236 
+5, norm(r)::10311.852975 
+6, norm(r)::2424.923818 
+7, norm(r)::439.247141 
+8, norm(r)::122.928823 
+9, norm(r)::30.119922 
+10, norm(r)::13.067794 
+11, norm(r)::4.168025 
+12, norm(r)::0.935876 
+13, norm(r)::0.145390 
+14, norm(r)::0.043551 
+15, norm(r)::0.009757 
+Newton iteration ni::1, nd::-nan Decrement ::-nan, g(a)::-796461.186206 
+Newton Step size::0.000000 
+norm(r)=329842078.564324 
+0, norm(r)::20877368.617234 
+1, norm(r)::1718843.911431 
+2, norm(r)::262037.099714 
+3, norm(r)::124338.534384 
+4, norm(r)::31373.824236 
+5, norm(r)::10311.852975 
+6, norm(r)::2424.923818 
+7, norm(r)::439.247141 
+8, norm(r)::122.928823 
+9, norm(r)::30.119922 
+10, norm(r)::13.067794 
+11, norm(r)::4.168025 
+12, norm(r)::0.935876 
+13, norm(r)::0.145390 
+14, norm(r)::0.043551 
+15, norm(r)::0.009757 
+Newton iteration ni::2, nd::-nan Decrement ::-nan, g(a)::-796461.186206 
+Newton Step size::0.000000 
+Newton slow progress! Decrement ::-nan; g(a)::-796461.186206; f(a)::-779524.710645 
+Barrier iteration bi=3, suboptimality gap (n/t)=124.975000, n=49990, t=400.000000, f(a)=-779524.710645
+norm(r)=329842075.370845 
+0, norm(r)::20877368.416845 
+1, norm(r)::1718843.895219 
+2, norm(r)::262037.097293 
+3, norm(r)::124338.533276 
+4, norm(r)::31373.823975 
+5, norm(r)::10311.852898 
+6, norm(r)::2424.923801 
+7, norm(r)::439.247139 
+8, norm(r)::122.928822 
+9, norm(r)::30.119921 
+10, norm(r)::13.067794 
+11, norm(r)::4.168025 
+12, norm(r)::0.935876 
+13, norm(r)::0.145390 
+14, norm(r)::0.043551 
+15, norm(r)::0.009757 
+Newton iteration ni::1, nd::-nan Decrement ::-nan, g(a)::-780371.534423 
+Newton Step size::0.000000 
+norm(r)=329842075.370845 
+0, norm(r)::20877368.416845 
+1, norm(r)::1718843.895219 
+2, norm(r)::262037.097293 
+3, norm(r)::124338.533276 
+4, norm(r)::31373.823975 
+5, norm(r)::10311.852898 
+6, norm(r)::2424.923801 
+7, norm(r)::439.247139 
+8, norm(r)::122.928822 
+9, norm(r)::30.119921 
+10, norm(r)::13.067794 
+11, norm(r)::4.168025 
+12, norm(r)::0.935876 
+13, norm(r)::0.145390 
+14, norm(r)::0.043551 
+15, norm(r)::0.009757 
+Newton iteration ni::2, nd::-nan Decrement ::-nan, g(a)::-780371.534423 
+Newton Step size::0.000000 
+Newton slow progress! Decrement ::-nan; g(a)::-780371.534423; f(a)::-779524.710645 
+Barrier iteration bi=4, suboptimality gap (n/t)=6.248750, n=49990, t=8000.000000, f(a)=-779524.710645
+norm(r)=329842075.211171 
+0, norm(r)::20877368.406826 
+1, norm(r)::1718843.894408 
+2, norm(r)::262037.097172 
+3, norm(r)::124338.533220 
+4, norm(r)::31373.823962 
+5, norm(r)::10311.852894 
+6, norm(r)::2424.923800 
+7, norm(r)::439.247139 
+8, norm(r)::122.928822 
+9, norm(r)::30.119921 
+10, norm(r)::13.067794 
+11, norm(r)::4.168025 
+12, norm(r)::0.935876 
+13, norm(r)::0.145390 
+14, norm(r)::0.043551 
+15, norm(r)::0.009757 
+Newton iteration ni::1, nd::-nan Decrement ::-nan, g(a)::-779567.051834 
+Newton Step size::0.000000 
+norm(r)=329842075.211171 
+0, norm(r)::20877368.406826 
+1, norm(r)::1718843.894408 
+2, norm(r)::262037.097172 
+3, norm(r)::124338.533220 
+4, norm(r)::31373.823962 
+5, norm(r)::10311.852894 
+6, norm(r)::2424.923800 
+7, norm(r)::439.247139 
+8, norm(r)::122.928822 
+9, norm(r)::30.119921 
+10, norm(r)::13.067794 
+11, norm(r)::4.168025 
+12, norm(r)::0.935876 
+13, norm(r)::0.145390 
+14, norm(r)::0.043551 
+15, norm(r)::0.009757 
+Newton iteration ni::2, nd::-nan Decrement ::-nan, g(a)::-779567.051834 
+Newton Step size::0.000000 
+Newton slow progress! Decrement ::-nan; g(a)::-779567.051834; f(a)::-779524.710645 
+Barrier iteration bi=5, suboptimality gap (n/t)=0.312437, n=49990, t=160000.000000, f(a)=-779524.710645
+norm(r)=329842075.203187 
+0, norm(r)::20877368.406325 
+1, norm(r)::1718843.894368 
+2, norm(r)::262037.097166 
+3, norm(r)::124338.533217 
+4, norm(r)::31373.823961 
+5, norm(r)::10311.852893 
+6, norm(r)::2424.923800 
+7, norm(r)::439.247139 
+8, norm(r)::122.928822 
+9, norm(r)::30.119921 
+10, norm(r)::13.067794 
+11, norm(r)::4.168025 
+12, norm(r)::0.935876 
+13, norm(r)::0.145390 
+14, norm(r)::0.043551 
+15, norm(r)::0.009757 
+Newton iteration ni::1, nd::-nan Decrement ::-nan, g(a)::-779526.827705 
+Newton Step size::0.000000 
+norm(r)=329842075.203187 
+0, norm(r)::20877368.406325 
+1, norm(r)::1718843.894368 
+2, norm(r)::262037.097166 
+3, norm(r)::124338.533217 
+4, norm(r)::31373.823961 
+5, norm(r)::10311.852893 
+6, norm(r)::2424.923800 
+7, norm(r)::439.247139 
+8, norm(r)::122.928822 
+9, norm(r)::30.119921 
+10, norm(r)::13.067794 
+11, norm(r)::4.168025 
+12, norm(r)::0.935876 
+13, norm(r)::0.145390 
+14, norm(r)::0.043551 
+15, norm(r)::0.009757 
+Newton iteration ni::2, nd::-nan Decrement ::-nan, g(a)::-779526.827705 
+Newton Step size::0.000000 
+Newton slow progress! Decrement ::-nan; g(a)::-779526.827705; f(a)::-779524.710645 
+Barrier converged in bi::5 iterations; suboptimality gap 2n/t::0.624875, n=49990, t=160000.000000 
+#BSV 49990, #SV 49990
+approx mean b=1.045365e+05 std b=8.731149e-11, #samples=50
+ 
+real	2m44.073s
+user	0m0.017s
+sys	0m0.024s

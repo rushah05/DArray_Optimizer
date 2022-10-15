@@ -1,0 +1,22 @@
+
+The following have been reloaded with a version change:
+  1) cmake/3.21.3 => cmake/3.17.3
+
+*********************************
+*********************************
+ijcnn1 n=49990 d=22 k=32 qq=1 (N 1 np 1)
+P[0,0]: libsvm read takes: 169 (ms)
+P[0,0]: training and label data distribution across 9 processes takes : 3 (ms)
+in 1 chunks. Progress: 1 
+P[0,0]: lra takes : 12884 (ms)
+P[0,0]: QR takes: 31 (ms)
+in 1 chunks. Progress: 1 
+P[0,0]: K*Q takes: 12714(ms)
+P[0,0]: C=QT*KQ takes: 23(ms)
+P[0,0]: SVD takes: 0(ms)
+P[0,0]: Creating Low Rank Approximator Z takes: 6(ms)
+fnorm(K)=22273.124847 fnorm(K-U*U)=nan Residual fnorm=nan
+
+real	0m45.685s
+user	0m0.011s
+sys	0m0.030s

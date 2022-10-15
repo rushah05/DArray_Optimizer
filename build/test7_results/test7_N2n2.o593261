@@ -1,0 +1,13 @@
+
+The following have been reloaded with a version change:
+  1) cmake/3.21.3 => cmake/3.17.3
+
+*********************************
+*********************************
+#### transpose test grid pxq 2x2 #### 
+Inner-Product P[0,0]: K*O takes : 4994583 (ms)
+P[0,0]: Out-Of-Core K*O takes : 2493476 (ms)
+  
+real	126m30.277s
+user	0m0.009s
+sys	0m0.030s

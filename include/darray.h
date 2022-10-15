@@ -340,13 +340,41 @@ namespace DArray {
             }
         }
 
+        void set_normal(T mean, T stddev) {
+            std::mt19937 generator(std::chrono::system_clock::now().time_since_epoch().count());
+            std::normal_distribution<T> distribution(mean, stddev);
+            for (int i = 0; i < m_dims[0]; i++) {
+                for (int j = 0; j < m_dims[1]; j++) {
+                    (*this)(i,j) = distribution(generator);
+                }
+            }
+        }
+
+        void add(LMatrix<T>& A) {
+            for (int i = 0; i < m_dims[0]; i++) {
+                for (int j = 0; j < m_dims[1]; j++) {
+                    (*this)(i,j) += A.data()[i+j*A.ld()];
+                }
+            }
+        }
+
         void diag(LMatrix<T> E) {
             for (int i = 0; i < m_dims[0]; i++) {
                 for (int j = 0; j < m_dims[1]; j++) {
-                    if(i == j) (*this)(i,j) = E.data()[i];
+                    if(i == j) (*this)(i,j) = E.data()[i+j*E.ld()];
                     else (*this)(i,j) = 0.0;
                 }
             }
+        }
+
+        LMatrix<T> diag() {
+            LMatrix<T> E(m_dims[0], 1);
+            for (int i = 0; i < m_dims[0]; i++) {
+                for (int j = 0; j < m_dims[1]; j++) {
+                    if(i == j) E.data()[i] = (*this)(i,j);
+                }
+            }
+            return E;
         }
 
         void set_function(std::function<T (int, int)> func) {
@@ -377,6 +405,14 @@ namespace DArray {
             for(int j=0; j<n; j++) {
                 for(int i=j+1; i<m; i++)
                     m_data[i+j*m_ld] = 0;
+            }
+        }
+
+        void float_to_double(float* sA, int lda) {
+            for (int i=0; i<m_dims[0]; i++) {
+                for (int j=0; j<m_dims[1]; j++) {
+                    m_data[i+j*m_ld] = static_cast<double>(sA[i+j*lda]);
+                }
             }
         }
 
@@ -536,11 +572,23 @@ namespace DArray {
                 int gi = d[0] * i + r[0];
                 for (int j = 0; j < m_ldims[1]; j++) {
                     int gj = d[1] * j + r[1];
-                    // if(m_grid.rank() == 3) printf("gi::%d, gj::%d \n", gi, gj);
+                    // if(m_grid.rank() == 3) printf("global[%d,%d] local[%d,%d] \n", gi, gj, i, j);
                     m_data[i+j*m_lld] = x[gi+gj*ldx];
                 }
             }
         }
+
+        // void set_value_from_matrix(T* x, int ldx) {
+        //     auto d = m_grid.dims();
+        //     auto r = m_grid.ranks();
+        //     for (int i = 0; i < m_ldims[0]; i++) {
+        //         int gi = d[0] * i + r[0];
+        //         for (int j = 0; j < m_ldims[1]; j++) {
+        //             int gj = d[1] * j + r[1];
+        //             m_data[i+j*m_lld] = x[gi+gj*ldx];
+        //         }
+        //     }
+        // }
 
         void set_function(std::function<T (int, int)> func) {
             auto d = m_grid.dims();
@@ -550,15 +598,6 @@ namespace DArray {
                 for (int j = 0; j < m_ldims[1]; j++) {
                     int gj = d[1] * j + r[1];
                     m_data[i+j*m_lld] = func(gi,gj);
-                }
-            }
-        }
-
-
-        void to_double(DMatrix<double> E) {
-            for (int i = 0; i < m_ldims[0]; i++) {
-                for (int j = 0; j < m_ldims[1]; j++) {
-                    E.data()[i+j*lld()] = (*this)(i, j);
                 }
             }
         }
@@ -952,10 +991,14 @@ namespace DArray {
         // will return the same local matrix.
         LMatrix<T> replicate_in_rows(int i1, int j1, int i2, int j2) {
             Tracer tracer(__FUNCTION__ );
+            // DArray::ElapsedTimer timer;
+            // timer.start();
             auto i12 = global_to_local_index({i1,i2}, grid().ranks()[0], grid().dims()[0], 0);
             auto j12 = global_to_local_index({j1,j2}, grid().ranks()[1], grid().dims()[1], 0);
             int mm = i12[1] - i12[0];
             int nn = j12[1] - j12[0];
+            // int ms = timer.elapsed();
+            // if(grid().rank() == 0) fmt::print("P[{},{}]: global to local index takes : {} (ms)\n",  grid().ranks()[0], grid().ranks()[1], ms);
 
             LMatrix<T> sendbuf(mm, nn);
             copy_block(mm, nn, &data()[i12[0]+j12[0]*lld()], lld(), sendbuf.data(), sendbuf.ld());
@@ -963,6 +1006,7 @@ namespace DArray {
             LMatrix<T> recvbuf(mm, j2-j1);
             std::vector<int> displacements( grid().dims()[1], 0 );
             std::vector<int> recv_counts( grid().dims()[1], 0);
+            // if(grid().rank() == 0) printf("mm=%d, j2=%d, j1=%d, nn=%d\n", mm, j1, j2, nn);
 
             for(int i=1; i<displacements.size(); i++) {
                 displacements[i] = displacements[i-1] + block_sizes[i-1]*mm;
@@ -977,16 +1021,20 @@ namespace DArray {
             }
 #endif
             {
+                // timer.start();
                 Tracer tracer("Allgatherv in replicate_in_rows");
                 int err = MPI_Allgatherv(sendbuf.data(), mm * nn, convert_to_mpi_datatype<T>(),
                                          recvbuf.data(), recv_counts.data(), displacements.data(),
                                          convert_to_mpi_datatype<T>(),
                                          grid().comms()[1]);
                 assert(err == MPI_SUCCESS);
+                // ms = timer.elapsed();
+                // if(grid().rank() == 0) fmt::print("P[{},{}]: Allgatherv in replicate_in_rows takes : {} (ms)\n",  grid().ranks()[0], grid().ranks()[1], ms);
             }
             LMatrix<T> result(mm,j2-j1);
 
             {
+                // timer.start();
                 Tracer tracer("scatter in replicate_in_rows");
                 for (int pi = 0; pi < grid().dims()[1]; pi++) {
                     auto j12 = global_to_local_index({j1, j2}, pi, grid().dims()[1], 0);
@@ -999,6 +1047,8 @@ namespace DArray {
                         }
                     }
                 }
+                // ms = timer.elapsed();
+                // if(grid().rank() == 0) fmt::print("P[{},{}]: scatter in replicate_in_rows takes : {} (ms)\n",  grid().ranks()[0], grid().ranks()[1], ms);
             }
             return result;
         }
@@ -1018,6 +1068,7 @@ namespace DArray {
                 }
             }
         }
+
 
         void dereplicate_in_rows(LMatrix<T> A, int i1, int j1, int i2, int j2) {
             Tracer tracer(__FUNCTION__ );
@@ -1049,6 +1100,19 @@ namespace DArray {
                 }
             }
         }
+
+        //  LMatrix<T> copy_to_global(LMatrix<T> A, int i1, int j1, int i2, int j2) {
+        //     int mm = A.dims()[0], nn = A.dims()[1];
+        //     assert(mm == i2-i1 && nn == j2-j1);
+        //     auto i12 = global_to_local_index({i1,i2}, grid().ranks()[0], grid().dims()[0], 0);
+        //     auto j12 = global_to_local_index({j1,j2}, grid().ranks()[1], grid().dims()[1], 0);
+        //     int np = grid().dims()[0], nq = grid().dims()[1];
+        //     int p = grid().ranks()[0], q = grid().ranks()[1];
+
+            
+        // }
+
+
 
         // align: the process that element 0 is at;
         static inline std::array<int,2> global_to_local_index(std::array<int,2> ij, int p, int np, int align) {
@@ -1305,9 +1369,6 @@ namespace DArray {
                 }
             }
         }
-
-
-
 
     };
 

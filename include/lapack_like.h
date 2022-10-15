@@ -386,26 +386,29 @@ namespace DArray {
 
 
     template<typename T>
-    LMatrix<T> svd(int k, DMatrix<T> A, int i1, int j1, int i2, int j2) {
-        auto LA = A.replicate_in_all(i1,j1,i2,j2);
+    LMatrix<T> svd(int rank, LMatrix<T> LA, int i1, int j1, int i2, int j2) {
         int m = LA.dims()[0], n = LA.dims()[1];
-        assert( n == j2 - j1);
-        assert( m == i2 - i1);
+        assert (m == n);
         
-        DArray::LMatrix<T> S(k,1);
-        DArray::LMatrix<T> U(k,k);
-        DArray::LMatrix<T> VT(k,k);
+        DArray::LMatrix<T> S(m,1);
+        DArray::LMatrix<T> U(m, n);
+        DArray::LMatrix<T> VT(n, n);
 
-        int info, lwork = -1;
+        int info=-1, lwork = -1;
         T tmp;
         //perform a svd on Q^T*A
-        sgesvd_("A", "A", &k, &k, LA.data(), &LA.ld(), S.data(), U.data(), &U.ld(), VT.data(), &VT.ld(), &tmp, &lwork, &info);
+        sgesvd_("A", "A", &m, &n, LA.data(), &LA.ld(), S.data(), U.data(), &U.ld(), VT.data(), &VT.ld(), &tmp, &lwork, &info);
+        assert(info == 0);
         lwork = tmp;
         DArray::LMatrix<T> work(lwork, 1);
 
-        sgesvd_("A", "A", &k, &k, LA.data(), &LA.ld(), S.data(), U.data(), &U.ld(), VT.data(), &VT.ld(), work.data(), &lwork, &info);
-        DArray::LMatrix<T> diagS(k,k);
-        diagS.diag(S);
-        return diagS;
+        info=-1;
+        sgesvd_("A", "A", &m, &n, LA.data(), &LA.ld(), S.data(), U.data(), &U.ld(), VT.data(), &VT.ld(), work.data(), &lwork, &info);
+        assert(info == 0);
+
+        // DArray::LMatrix<T> diagS(m, n);
+        // diagS.diag(S);
+        // S.save_to_file("S.csv");
+        return S;
     }
 }
